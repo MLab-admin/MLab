@@ -31,7 +31,7 @@ persistent startup
 
 % --- Cleaning
 close all
-clear global all
+clear global
 evalin('base', 'clear');
 
 % --- Startup
@@ -53,7 +53,10 @@ if isempty(startup)
     % --- Plugins startups
     L = ML.Plugins.list;
     for i = 1:numel(L)
-        try ML.(L{i}).startup; end
+        try 
+            ML.(L{i}).startup; 
+        catch
+        end
     end
 
 else
