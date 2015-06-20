@@ -30,7 +30,7 @@ function start()
 
 % --- Persistent variables ------------------------------------------------
 
-% mlock
+mlock
 persistent startup
 
 % -------------------------------------------------------------------------
@@ -42,12 +42,11 @@ cname = [prefdir filesep 'MLab.mat'];
 
 % Check existence
 if ~exist(cname, 'file')
-    
+    ML.Config.default;
 end
 
 % Load configuration
-tmp = load(cname);
-config = tmp.config;
+config = ML.Config.get;
 
 % --- Rehash
 addpath(genpath(config.path), '-end');
