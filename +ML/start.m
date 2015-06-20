@@ -1,9 +1,12 @@
 function start()
-%ML.start MLab starting point
-%   ML.START() starts MLab.
+%ML.start MLab start
+%   ML.start() starts MLab. All dependencies are automatically added to 
+%   Matlab's path.
 %
-%   This function can be executed automatically at Matlab startup. To set 
-%   this up you need to create a startup.m file at the following location:
+%   --- STARTUP CONFIGURATION
+%
+%   MLab can be started automatically during Matlab startup. To set this up
+%   you need to create a startup.m file at the following location:
 %
 %   $matlabroot/toolbox/local/startup.m
 %
@@ -17,39 +20,52 @@ function start()
 %       end
 %   end
 %   
-%   See also ML.Config.config.
+%   See also ML.stop
 %
-%   Reference page in Help browser: <a href="matlab:doc ML.start">doc ML.start</a>
-%   <a href="matlab:doc ML">MLab documentation</a>
+%   More on <a href="matlab:ML.doc('ML.start');">ML.doc</a>
 
-% === Persistent variables ================================================
+%! TO DO
+%   - Improve help (detail the settings, update startup config).
+%   - ML.doc
 
-mlock
+% --- Persistent variables ------------------------------------------------
+
+% mlock
 persistent startup
 
-% =========================================================================
+% -------------------------------------------------------------------------
 
-% --- Cleaning
-close all
-clear global
-evalin('base', 'clear');
+% --- Get configuration file
+
+% Define configuration file
+cname = [prefdir filesep 'MLab.mat'];
+
+% Check existence
+if ~exist(cname, 'file')
+    
+end
+
+% Load configuration
+tmp = load(cname);
+config = tmp.config;
+
+% --- Rehash
+addpath(genpath(config.path), '-end');
+rehash
+
+% --- Prepare display
+cws = get(0,'CommandWindowSize');
 
 % --- Startup
 if isempty(startup)
     
-    % --- Configuration file
-    config = ML.Config.get('quiet', false);
+    % --- Welcome message
+    tmp = 'Hello';
+    if ~isempty(config.user.name)
+        tmp = [tmp ', ' config.user.name];
+    end
+    ML.CW.print('%s%s\n', repmat(' ', [1 cws(1)-numel(tmp)-1]), tmp);
             
-    % --- Check updates
-    if config.startup.check_updates
-        ML.Updates.check
-    end
-    
-    % --- Misc startups
-    if opengl('info')
-        set(0, 'DefaultFigureRenderer', 'painters');
-    end
-    
     % --- Plugins startups
     L = ML.Plugins.list;
     for i = 1:numel(L)
@@ -58,21 +74,8 @@ if isempty(startup)
         catch
         end
     end
-
-else
-    
-    clc
-    
-    % --- Configuration file
-    config = ML.Config.get('quiet', true);
     
 end
-
-startup = false;
-
-% --- Rehash
-addpath(genpath(config.path), '-end');
-rehash
 
 % --- Character set
 feature('DefaultCharacterSet', config.charset);
@@ -80,8 +83,16 @@ feature('DefaultCharacterSet', config.charset);
 % --- Warnings
 warning('off', 'images:imshow:magnificationMustBeFitForDockedFigure');
 
-% --- Welcome message
-fprintf('<strong>Hello %s</strong>\n', config.user.name);
+% --- Start message
+ML.CW.print('%s~bc[limegreen]{MLab is started}\n', repmat(' ', [1 cws(1)-16]));
 ML.CW.line;
 
-
+if isempty(startup)    
+    
+    % --- Check updates
+    if config.startup.check_updates
+        ML.Updates.check
+    end
+    
+    startup = false;
+end
