@@ -31,10 +31,14 @@ config = ML.Config.get;
 % --- Remove MLab
 if isempty(in.plugins)
    
+    % Uninstall message
+    cws = get(0,'CommandWindowSize');
+    ML.CW.print('%s~bc[cornflowerblue]{MLab is uninstalled}\n', repmat(' ', [1 cws(1)-20]));
+    ML.CW.line;
+   
     % Remove MLab
-    rmpath(genpath(config.path));
-    
     warning off
+    rmpath(genpath(config.path));
     rmdir(config.path, 's');
     warning on
     
