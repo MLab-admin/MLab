@@ -25,13 +25,15 @@ if ischar(in.plugins)
     in.plugins = {in.plugins};
 end
 
-% --- Preparation
+% --- Load configuration
 config = ML.Config.get;
 
 % --- Remove MLab
 if isempty(in.plugins)
    
     % Remove MLab
+    rmpath(genpath(config.path));
+    
     warning off
     rmdir(config.path, 's');
     warning on
@@ -58,3 +60,5 @@ for i = 1:numel(in.plugins)
         if exist(fname, 'file'), delete(fname); end
     end
 end
+
+rehash
