@@ -32,7 +32,9 @@ config = ML.Config.get;
 if isempty(in.plugins)
    
     % Remove MLab
+    warning off
     rmdir(config.path, 's');
+    warning on
     
     % Remove configuration file
     if in.config
@@ -46,7 +48,9 @@ end
 for i = 1:numel(in.plugins)
     
     % Remove plugin
+    warning off
     rmdir([config.path 'Plugins' filesep in.plugins{i}], 's');
+    warning on
     
     % Remove configuration file
     if in.config
