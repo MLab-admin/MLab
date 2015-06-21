@@ -46,6 +46,10 @@ function print(varargin)
 %
 %   More on <a href="matlab:ML.doc('ML.CW.print');">ML.doc</a>
 
+%! TO DO
+%   - Check the * in "Hyperlinks colored with a custom color are possible,
+%   but they have to be underlined *"
+
 % --- Inputs --------------------------------------------------------------
 
 % --- Options
@@ -178,7 +182,7 @@ while docElement.getStartOffset < cmdWinDoc.getLength
     if numel(tokens)>=2
         styles = tokens(2);
         styles(end-1) = java.lang.String(style);
-        styles(end) = java.lang.String(style);
+%         styles(end) = java.lang.String(style);
     end
     
     % Make empty URLs un-hyperlinkable
@@ -210,22 +214,3 @@ xCmdWndView.repaint;
 if in.bold || in.underline
     fprintf(char(8));
 end
-
-%! ------------------------------------------------------------------------
-%! Author: Raphaël Candelier
-%! Version: 1.1
-%
-%! Revisions
-%   1.2     (2015/05/06): Changed the purpose of this function, the
-%               previous behavior being transfered to the ML.CW.numel
-%               function.
-%   1.1     (2015/04/02): Created help.
-%   1.0     (2015/01/01): Initial version.
-%
-%! TO DO
-%   - Correct the single caracter bug
-%   - Check the * in "Hyperlinks colored with a custom color are possible,
-%   but they have to be underlined *"
-%! ------------------------------------------------------------------------
-%! Doc
-%   <title>To do</title>
