@@ -12,16 +12,3 @@ try
 catch
     out = false;
 end
-
-%! ------------------------------------------------------------------------
-%! Author: Raphaël Candelier
-%! Version: 1.0
-%
-%! Revisions
-%   1.0     (2015/05/30): Initial version.
-%
-%! To_do
-%   Write ML.doc.
-%! ------------------------------------------------------------------------
-%! Doc
-%   <title>To do</title>
