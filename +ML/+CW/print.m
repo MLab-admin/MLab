@@ -60,16 +60,19 @@ else
     options = false;
 end
 
-% --- Text processing -----------------------------------------------------
+% --- Checks --------------------------------------------------------------
 
-% --- Special modes (no desktop, deployed)
-if ~ML.isdesktop || isdeployed
+% --- Deployed mode
+if isdeployed
     
     % TO DO: Remove tags
     
     fprintf(varargin{1}, varargin{2:end});
     return;
+    
 end
+
+% --- Text processing -----------------------------------------------------
 
 str = sprintf(varargin{1}, varargin{2:end});
 
@@ -106,9 +109,9 @@ else
             tmp = str2num(opt.color);
             if ~isempty(tmp)
                 if any(tmp>1)
-                    opt.color = uint8(tmp); 
+                    opt.color = uint8(tmp);
                 else
-                   opt.color = tmp;
+                    opt.color = tmp;
                 end
             end
             
@@ -119,6 +122,7 @@ else
         
     end
 end
+
 
 % =========================================================================
 function cprintf(str,varargin)
@@ -133,84 +137,110 @@ in.bold(false) = @islogical;
 in.underline(false) = @islogical;
 in = +in;
 
-% --- Checks --------------------------------------------------------------
-
-% Bold and underline
-if in.bold && in.underline
-    warning('MLab:cprintf:BoldAndUnderline', 'Matlab cannot represent text that is bolded and underlined. The bold option is set to false.');
-    in.bold = false;
-end
-
-% --- Print text ----------------------------------------------------------
-
-% --- Prepare color
-
-% Convert to RGB_8
-in.color = ML.color(in.color, 'to', 'RGB_8');
-
-% Define java color
-style = sprintf('[%d,%d,%d]', in.color);
-com.mathworks.services.Prefs.setColorPref(style, java.awt.Color(in.color(1), in.color(2), in.color(3)));
-
-% --- Manage CW output
-
-% Get the current CW position
-cmdWinDoc = com.mathworks.mde.cmdwin.CmdWinDocument.getInstance;
-lastPos = cmdWinDoc.getLength;
-
-% Get a handle to the Command Window component
-mde = com.mathworks.mde.desk.MLDesktop.getInstance;
-cw = mde.getClient('Command Window');
-xCmdWndView = cw.getComponent(0).getViewport.getComponent(0);
-
-% Store the CW background color as a special color pref
-com.mathworks.services.Prefs.setColorPref('CW_BG_Color',xCmdWndView.getBackground);
-
-% Display the text in the Command Window
-if in.bold, str = ['<strong>' str '</strong>']; end
-if in.underline, str = ['<a href="">' str '</a>']; end
-
-fprintf(2, [str ' ']);
-
-drawnow;
-docElement = cmdWinDoc.getParagraphElement(lastPos+1);
-
-% Get the Document Element(s) corresponding to the latest fprintf operation
-while docElement.getStartOffset < cmdWinDoc.getLength
+if ML.isdesktop
     
-    tokens = docElement.getAttribute('SyntaxTokens');
-    if numel(tokens)>=2
-        styles = tokens(2);
-        styles(end-1) = java.lang.String(style);
-%         styles(end) = java.lang.String(style);
+    % --- Checks --------------------------------------------------------------
+    
+    % Bold and underline
+    if in.bold && in.underline
+        warning('MLab:cprintf:BoldAndUnderline', 'Matlab cannot represent text that is bolded and underlined. The bold option is set to false.');
+        in.bold = false;
     end
     
-    % Make empty URLs un-hyperlinkable
-    urls = docElement.getAttribute('HtmlLink');
-    if ~isempty(urls)
-        urlTargets = urls(2);
-        for urlIdx = 1 : length(urlTargets)
-            if isa(urlTargets(urlIdx), 'java.lang.String') && urlTargets(urlIdx).length<1
-                urlTargets(urlIdx) = [];
+    % --- Print text ----------------------------------------------------------
+    
+    % --- Prepare color
+    
+    % Convert to RGB_8
+    in.color = ML.color(in.color, 'to', 'RGB_8');
+    
+    % Define java color
+    style = sprintf('[%d,%d,%d]', in.color);
+    com.mathworks.services.Prefs.setColorPref(style, java.awt.Color(in.color(1), in.color(2), in.color(3)));
+    
+    % --- Manage CW output
+    
+    % Get the current CW position
+    cmdWinDoc = com.mathworks.mde.cmdwin.CmdWinDocument.getInstance;
+    lastPos = cmdWinDoc.getLength;
+    
+    % Get a handle to the Command Window component
+    mde = com.mathworks.mde.desk.MLDesktop.getInstance;
+    cw = mde.getClient('Command Window');
+    xCmdWndView = cw.getComponent(0).getViewport.getComponent(0);
+    
+    % Store the CW background color as a special color pref
+    com.mathworks.services.Prefs.setColorPref('CW_BG_Color',xCmdWndView.getBackground);
+    
+    % Display the text in the Command Window
+    if in.bold, str = ['<strong>' str '</strong>']; end
+    if in.underline, str = ['<a href="">' str '</a>']; end
+    
+    fprintf(2, [str ' ']);
+    
+    drawnow;
+    docElement = cmdWinDoc.getParagraphElement(lastPos+1);
+    
+    % Get the Document Element(s) corresponding to the latest fprintf operation
+    while docElement.getStartOffset < cmdWinDoc.getLength
+        
+        tokens = docElement.getAttribute('SyntaxTokens');
+        if numel(tokens)>=2
+            styles = tokens(2);
+            styles(end-1) = java.lang.String(style);
+            %         styles(end) = java.lang.String(style);
+        end
+        
+        % Make empty URLs un-hyperlinkable
+        urls = docElement.getAttribute('HtmlLink');
+        if ~isempty(urls)
+            urlTargets = urls(2);
+            for urlIdx = 1 : length(urlTargets)
+                if isa(urlTargets(urlIdx), 'java.lang.String') && urlTargets(urlIdx).length<1
+                    urlTargets(urlIdx) = [];
+                end
             end
+        end
+        
+        tmp = cmdWinDoc.getParagraphElement(docElement.getEndOffset+1);
+        if isequal(docElement,tmp)
+            break
+        else
+            docElement = tmp;
         end
     end
     
-    tmp = cmdWinDoc.getParagraphElement(docElement.getEndOffset+1);
-    if isequal(docElement,tmp)
-        break
-    else
-        docElement = tmp;
+    if ~in.bold && ~in.underline
+        fprintf(char(8));
     end
-end
-
-if ~in.bold & ~in.underline
-    fprintf(char(8));
-end
-
-% Force Command-Window repaint
-xCmdWndView.repaint;
-
-if in.bold || in.underline
-    fprintf(char(8));
+    
+    % Force Command-Window repaint
+    xCmdWndView.repaint;
+    
+    if in.bold || in.underline
+        fprintf(char(8));
+    end
+    
+else
+    
+    % --- Prepare appearence
+    s = '';
+    if in.bold, s = [s '1;']; end
+    if in.underline, s = [s '4;']; end
+    
+    % --- Prepare color
+    C = {[0 0 0] '30' ; ...
+         [1 0 0] '31' ; ...
+         [0 1 0] '32' ; ...
+         [1 1 0] '33' ; ...
+         [0 0 1] '34' ; ...
+         [1 0 1] '35' ; ...
+         [0 1 1] '36' ; ...
+         [1 1 1] '37'};
+    
+    [~, I] = min(sum((ones(size(C,1),1)*ML.color(in.color) - reshape([C{:,1}], [3 size(C,1)])').^2,2));
+    s = [s C{I,2}];
+    
+    % --- Display
+    fprintf('\033[%sm%s\033[0m', s, str);
 end
