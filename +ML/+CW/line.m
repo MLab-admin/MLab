@@ -51,22 +51,5 @@ txt = [txt repmat(in.marker, [1,in.length-N-1]) char(10)];
 if nargout
     out = txt;
 else
-    fprintf(txt); 
+    ML.CW.print(txt); 
 end
-
-%! ------------------------------------------------------------------------
-%! Author: Raphaël Candelier
-%! Version: 1.2
-%
-%! Revisions
-%   1.2     (2015/05/13): Updated the help
-%   1.1     (2015/04/18): Rewrited the code to handle the tags, used 
-%               "char(9472)" as default marker and created help.
-%   1.0     (2010/01/01): Initial version.
-%
-%! To_do
-%   MLab doc
-%
-%! ------------------------------------------------------------------------
-%! Doc
-%   <title>To do</title>
