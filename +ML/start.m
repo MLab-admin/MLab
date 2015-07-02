@@ -3,29 +3,12 @@ function start()
 %   ML.start() starts MLab. All dependencies are automatically added to 
 %   Matlab's path.
 %
-%   --- STARTUP CONFIGURATION
-%
-%   MLab can be started automatically during Matlab startup. To set this up
-%   you need to create a startup.m file at the following location:
-%
-%   $matlabroot/toolbox/local/startup.m
-%
-%   The startup.m should contain the following commands:
-%
-%   if exist([prefdir filesep 'MLab.mat'], 'file')
-%    	tmp = load([prefdir filesep 'MLab.mat']);
-%       addpath(genpath(tmp.config.path), '-end');
-%       if tmp.config.startup.autostart
-%           ML.start
-%       end
-%   end
-%   
 %   See also ML.stop
 %
 %   More on <a href="matlab:ML.doc('ML.start');">ML.doc</a>
 
 %! TO DO
-%   - Improve help (detail the settings, update startup config).
+%   - Improve help (detail the settings).
 %   - ML.doc
 
 % --- Persistent variables ------------------------------------------------
@@ -46,7 +29,7 @@ if ~exist(cname, 'file')
 end
 
 % Load configuration
-config = ML.Config.get;
+config = ML.config;
 
 % --- Rehash
 addpath(genpath(config.path), '-end');

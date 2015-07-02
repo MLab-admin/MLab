@@ -11,7 +11,7 @@ function stop()
 %   - ML.doc
 
 % --- Load configuration
-config = ML.Config.get;
+config = ML.config;
 
 % --- Stop message
 cws = get(0,'CommandWindowSize');

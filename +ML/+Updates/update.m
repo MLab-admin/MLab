@@ -19,7 +19,7 @@ in = in.Results;
 % =========================================================================
 
 % --- Get configutation
-config = ML.Config.get;
+config = ML.config;
 
 % --- Get file list
 L = ML.Updates.get('force', in.force);

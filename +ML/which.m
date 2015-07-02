@@ -24,7 +24,7 @@ if ML.isfunction_handle(in.loc)
     in.loc = func2str(in.loc);
 end
 
-conf = ML.Config.get;
+conf = ML.config;
 ppath = [conf.path 'Plugins' filesep];
 
 % --- Define output

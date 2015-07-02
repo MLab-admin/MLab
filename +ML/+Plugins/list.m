@@ -14,7 +14,7 @@ in = in.Results;
 % =========================================================================
 
 % --- Get configuration structure
-config = ML.Config.get;
+config = ML.config;
 
 % --- Get plugins list
 list = {};

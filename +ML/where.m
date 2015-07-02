@@ -42,7 +42,7 @@ if ischar(in.Extensions), in.Extensions = {in.Extensions}; end
 
 % --- Automatic directories
 if strcmp(in.dir, 'MLab')
-    config = ML.Config.get;
+    config = ML.config;
     in.dir = config.path;
 end
 

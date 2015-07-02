@@ -18,7 +18,7 @@ if ischar(in.ptags)
 end
 
 % --- Get configuration structure
-config = ML.Config.get;
+config = ML.config;
 
 % --- Get file list
 url = [config.updates.mirror_url 'MLab.php?list='];

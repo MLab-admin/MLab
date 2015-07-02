@@ -25,7 +25,7 @@ if isempty(flist) || in.force
     
     % --- Definitions
     
-    config = ML.Config.get;
+    config = ML.config;
     server = config.updates.mirror_url;
     
     % --- Remote files

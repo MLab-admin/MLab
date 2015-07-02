@@ -26,7 +26,7 @@ if ischar(in.plugins)
 end
 
 % --- Load configuration
-config = ML.Config.get;
+config = ML.config;
 
 % --- Remove MLab
 if isempty(in.plugins)
