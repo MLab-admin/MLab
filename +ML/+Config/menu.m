@@ -23,10 +23,16 @@ switch in.menu
         out.text = 'Please choose a menu:';
         
         new_opt;
-        out.opt(end).value = 'Startup';
+        out.opt(end).value = 'Matlab startup';
+        out.opt(end).desc = '';
+        out.opt(end).cmd = 'a';
+        out.opt(end).action = 'menu:startup';
+        
+        new_opt;
+        out.opt(end).value = 'MLab start';
         out.opt(end).desc = '';
         out.opt(end).cmd = 's';
-        out.opt(end).action = 'menu:startup';
+        out.opt(end).action = 'menu:start';
         
         new_opt;
         out.opt(end).value = 'User';
@@ -45,6 +51,23 @@ switch in.menu
         out.opt(end).cmd = 'a';
         out.opt(end).action = 'toggle:startup:autostart,menu:startup';
         
+        new_opt;
+        out.opt(end).value = bool2str('get:startup:update');
+        out.opt(end).desc = 'Check for updates';
+        out.opt(end).cmd = 'u';
+        out.opt(end).action = 'toggle:startup:update,menu:startup';
+        
+        new_opt;
+        out.opt(end).value = bool2str('get:startup:disp_message');
+        out.opt(end).desc = 'Dislay welcome message';
+        out.opt(end).cmd = 'd';
+        out.opt(end).action = 'toggle:startup:disp_message,menu:startup';
+        
+        new_opt;
+        out.opt(end).value = ML.Config.action('get:startup:message');
+        out.opt(end).desc = 'Welcome message';
+        out.opt(end).cmd = 'm';
+        out.opt(end).action = 'input:startup:message,menu:startup';
         
     case 'user'
         
