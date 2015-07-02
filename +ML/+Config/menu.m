@@ -68,6 +68,17 @@ switch in.menu
         out.opt(end).desc = 'Welcome message';
         out.opt(end).cmd = 'm';
         out.opt(end).action = 'input:startup:message,menu:startup';
+    
+    case 'start'
+        
+        out.title = '~b{MLab Start Configuration}';
+        out.text = 'These settings control what MLab does upon start.';
+        
+        new_opt;
+        out.opt(end).value = bool2str('get:start:update');
+        out.opt(end).desc = 'Check for updates';
+        out.opt(end).cmd = 'u';
+        out.opt(end).action = 'toggle:start:update,menu:start';
         
     case 'user'
         
