@@ -41,6 +41,11 @@ end
 % --- Display options
 fprintf('\n');
 for i = 1:numel(M.opt)
+    
+    if isempty(M.opt(i).value)
+        M.opt(i).value = '''''';
+    end
+    
     ML.CW.print('\t<a href="matlab:ML.Config.action(''%s'');">%s</a> %s\n', ...
         M.opt(i).action, M.opt(i).value, M.opt(i).desc);
 end

@@ -31,22 +31,11 @@ end
 % Load configuration
 config = ML.config;
 
-% --- Rehash
-addpath(genpath(config.path), '-end');
-rehash
-
 % --- Prepare display
 cws = get(0,'CommandWindowSize');
 
 % --- Startup
 if isempty(startup)
-    
-    % --- Welcome message
-    tmp = 'Hello';
-    if ~isempty(config.user.name)
-        tmp = [tmp ', ' config.user.name];
-    end
-    ML.CW.print('%s%s\n', repmat(' ', [1 cws(1)-numel(tmp)-1]), tmp);
             
     % --- Plugins startups
     L = ML.Plugins.list;
@@ -66,14 +55,29 @@ feature('DefaultCharacterSet', config.charset);
 warning('off', 'images:imshow:magnificationMustBeFitForDockedFigure');
 
 % --- Start message
-ML.CW.print('%s~bc[limegreen]{MLab is started}\n', repmat(' ', [1 cws(1)-16]));
+if isempty(startup)
+    ML.CW.line('MLab is started', 'align', 'right', 'marker', ' ');
+else
+    ML.CW.line('~bc[limegreen]{MLab is started}', 'align', 'right', 'marker', ' ');
+end
+
+% Welcome message
+if isempty(startup) && config.startup.disp_message
+    
+    tmp = config.startup.message;
+    tmp = regexprep(tmp, '<user:name>', config.user.name);
+    ML.CW.line(tmp, 'align', 'right', 'marker', ' ');
+    
+end
+
 ML.CW.line;
 
 if isempty(startup)    
     
     % --- Check updates
-    if config.startup.check_updates
-        ML.Updates.check
+    if config.startup.update
+        % TO DO.
+        % ML.Updates.check
     end
     
     startup = false;
