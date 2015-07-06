@@ -37,6 +37,9 @@ for i = 1:numel(Act)
             for i = 2:numel(A)
                 s = [s '.' A{i}];
             end
+            
+            if isstruct(eval(s)), s = [s '.value']; end
+            
             switch class(in.value)
                 case 'char'
                     s = [s '=''' in.value ''';'];
@@ -58,7 +61,30 @@ for i = 1:numel(Act)
             
         case 'toggle'
             b = ML.Config.action(['get:' strjoin(A(2:end),':')]);
-            ML.Config.action(['set:' strjoin(A(2:end),':')], ~b);
+            
+            if isstruct(b)
+                ML.Config.action(['set:' strjoin(A(2:end),':')], ~b.value);
+            else
+                ML.Config.action(['set:' strjoin(A(2:end),':')], ~b);
+            end
+            
+            % Shortcuts
+            if strcmp(A{2}, 'shortcut')
+            
+                id = A{3};
+                tmp = load([prefdir filesep 'MLab.mat']);
+                tag = tmp.config.shortcut.(id).desc;
+                code = tmp.config.shortcut.(id).code;
+                icon = tmp.config.shortcut.(id).icon;
+                
+                S = com.mathworks.mlwidgets.shortcuts.ShortcutUtils;
+                if ismember(tag, arrayfun(@char, S.getShortcutsByCategory('MLab').toArray, 'UniformOutput', false))
+                    S.removeShortcut('MLab', tag);
+                else
+                    S.addShortcutToBottom(tag, code, [tmp.config.path icon], 'MLab', 'true');
+                end
+                
+            end
             
         case 'quit'
             % Do nothing

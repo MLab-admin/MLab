@@ -19,7 +19,7 @@ switch in.menu
     % --- Main ------------------------------------------------------------
     case 'main'
 
-        out.title = '~b{MLab Configuration}';
+        out.title = '~b{MLab configuration}';
         out.text = 'Please choose a menu:';
         
         new_opt;
@@ -34,6 +34,20 @@ switch in.menu
         out.opt(end).cmd = 's';
         out.opt(end).action = 'menu:start';
         
+        if ML.isdesktop
+            new_opt;
+            out.opt(end).value = 'Shortcuts';
+            out.opt(end).desc = '';
+            out.opt(end).cmd = 'c';
+            out.opt(end).action = 'menu:shortcuts';
+        else
+            new_opt;
+            out.opt(end).value = 'Shortcuts [not available in command line mode]';
+            out.opt(end).desc = '';
+            out.opt(end).cmd = ' ';
+            out.opt(end).action = 'menu:main';
+        end
+        
         new_opt;
         out.opt(end).value = 'User';
         out.opt(end).desc = '';
@@ -42,7 +56,7 @@ switch in.menu
        
     case 'startup'
         
-        out.title = '~b{MLab Startup Configuration}';
+        out.title = '~b{MLab startup configuration}';
         out.text = 'These settings control what MLab does upon Matlab''s startup.';
         
         new_opt;
@@ -71,7 +85,7 @@ switch in.menu
     
     case 'start'
         
-        out.title = '~b{MLab Start Configuration}';
+        out.title = '~b{MLab start configuration}';
         out.text = 'These settings control what MLab does upon start.';
         
         new_opt;
@@ -79,10 +93,39 @@ switch in.menu
         out.opt(end).desc = 'Check for updates';
         out.opt(end).cmd = 'u';
         out.opt(end).action = 'toggle:start:update,menu:start';
+    
+    case 'shortcuts'
+        
+        out.title = '~b{MLab shortcut configuration}';
+        out.text = 'These settings control the visible MLab shortcuts.';
+        
+        new_opt;
+        out.opt(end).value = bool2str('get:shortcut:start');
+        out.opt(end).desc = 'MLab start';
+        out.opt(end).cmd = 's';
+        out.opt(end).action = 'toggle:shortcut:start,menu:shortcuts';
+    
+        new_opt;
+        out.opt(end).value = bool2str('get:shortcut:stop');
+        out.opt(end).desc = 'MLab stop';
+        out.opt(end).cmd = 'p';
+        out.opt(end).action = 'toggle:shortcut:stop,menu:shortcuts';
+        
+        new_opt;
+        out.opt(end).value = bool2str('get:shortcut:config');
+        out.opt(end).desc = 'MLab config';
+        out.opt(end).cmd = 'c';
+        out.opt(end).action = 'toggle:shortcut:config,menu:shortcuts';
+    
+        new_opt;
+        out.opt(end).value = bool2str('get:shortcut:update');
+        out.opt(end).desc = 'MLab update';
+        out.opt(end).cmd = 'u';
+        out.opt(end).action = 'toggle:shortcut:update,menu:shortcuts';
         
     case 'user'
         
-        out.title = '~b{MLab User Configuration}';
+        out.title = '~b{MLab user configuration}';
         out.text = 'These settings are used for default custom message, and are required for version control.';
         
         new_opt;
@@ -108,7 +151,13 @@ end
     end
 
     function out = bool2str(b)
-        if ML.Config.action(b)
+        
+        res = ML.Config.action(b);
+        if isstruct(res)
+            res = res.value;
+        end
+        
+        if res
             out = 'Yes';
         else
             out = 'No';

@@ -31,14 +31,28 @@ end
 % Load configuration
 config = ML.config;
 
-% --- Prepare display
+% --- Preparation 
+
+% Plugins list
+L = ML.Plugins.list;
+
+% Display
 cws = get(0,'CommandWindowSize');
+
+% --- Add paths
+
+% MLab
+addpath(config.path, '-end');
+
+% Plugins
+...
+    
+rehash
 
 % --- Startup
 if isempty(startup)
-            
+    
     % --- Plugins startups
-    L = ML.Plugins.list;
     for i = 1:numel(L)
         try 
             ML.(L{i}).startup; 

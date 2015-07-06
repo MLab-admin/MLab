@@ -19,5 +19,11 @@ ML.CW.print('%s~bc[red]{MLab is stopped}\n', repmat(' ', [1 cws(1)-16]));
 ML.CW.line;
 
 % --- Remove MLab from path
-rmpath(genpath(config.path));
+
+% MLab
+rmpath(config.path);
+
+% Plugins
+
+
 rehash

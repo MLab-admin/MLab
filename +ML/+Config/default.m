@@ -30,6 +30,8 @@ fname = [prefdir filesep in.cfile '.mat'];
 % --- Create default configuration structure
 config = struct();
 
+config.version = 1;
+
 config.charset = 'UTF8';
 
 tmp = mfilename('fullpath');
@@ -44,9 +46,27 @@ config.start = struct('update', false);
 
 config.updates = struct('repository', 'https://github.com/MLab-admin/MLab.git');
 
-config.user = struct(...
-    'name', '', ...
-    'email', '');
+config.shortcut = struct();
+config.shortcut.start = struct('value', false, ...
+    'desc', 'Start', ...
+    'code', ['tmp = load([prefdir filesep ''MLab.mat'']);' char(10) ...
+        'addpath(tmp.config.path, ''-end'');' char(10) ...
+        'ML.start;'], ...
+    'icon', 'Images/Shortcuts/Start.png');
+config.shortcut.stop = struct('value', false, ...
+    'desc', 'Stop', ...
+    'code', failsafe('ML.stop;'), ...
+    'icon', 'Images/Shortcuts/Stop.png');
+config.shortcut.config = struct('value', false, ...
+    'desc', 'Config', ...
+    'code', failsafe('ML.config;'), ...
+    'icon', 'Images/Shortcuts/Config.png');
+config.shortcut.update = struct('value', false, ...
+    'desc', 'Update', ...
+    'code', failsafe('ML.update;'), ...
+    'icon', 'Images/Shortcuts/Update.png');
+
+config.user = struct('name', '', 'email', '');
 
 % --- Save configuration structure
 save(fname, 'config');
@@ -59,4 +79,26 @@ end
 % --- Output
 if nargout
     out = config;
+end
+
+end
+
+% =========================================================================
+function out = failsafe(code)
+    
+    nl = char(10);
+
+    out = ['try' nl ...
+        '    ' code nl ...
+        'catch' nl '    '];
+    
+    if usejava('desktop')
+        out = [out 'fprintf(''MLab is not started.\n <a href="matlab:tmp = load([prefdir filesep ''''MLab.mat'''']);' ...
+            'addpath(tmp.config.path, ''''-end''''); ML.start;">Click here</a> to start MLab.\n'');'];
+    else
+        out = [out 'fprintf(''MLab is not started.\n You have to run the \033[1;33;40mML.start\033[0m script to start MLab.\n'');'];
+    end
+    
+    out = [out nl 'end'];
+    
 end
