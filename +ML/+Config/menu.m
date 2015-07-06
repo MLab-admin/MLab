@@ -112,6 +112,12 @@ switch in.menu
         out.opt(end).action = 'toggle:shortcut:stop,menu:shortcuts';
         
         new_opt;
+        out.opt(end).value = bool2str('get:shortcut:state');
+        out.opt(end).desc = 'MLab state';
+        out.opt(end).cmd = 't';
+        out.opt(end).action = 'toggle:shortcut:state,menu:shortcuts';
+        
+        new_opt;
         out.opt(end).value = bool2str('get:shortcut:config');
         out.opt(end).desc = 'MLab config';
         out.opt(end).cmd = 'c';
