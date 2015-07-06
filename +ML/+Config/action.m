@@ -78,7 +78,7 @@ for i = 1:numel(Act)
                 icon = tmp.config.shortcut.(id).icon;
                 
                 S = com.mathworks.mlwidgets.shortcuts.ShortcutUtils;
-                if ismember(tag, arrayfun(@char, S.getShortcutsByCategory('MLab').toArray, 'UniformOutput', false))
+                if ~tmp.config.shortcut.(id).value || ismember(tag, arrayfun(@char, S.getShortcutsByCategory('MLab').toArray, 'UniformOutput', false))
                     S.removeShortcut('MLab', tag);
                 else
                     S.addShortcutToBottom(tag, code, [tmp.config.path icon], 'MLab', 'true');
