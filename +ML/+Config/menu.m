@@ -108,7 +108,7 @@ switch in.menu
         new_opt;
         out.opt(end).value = bool2str('get:shortcut:stop');
         out.opt(end).desc = 'MLab stop';
-        out.opt(end).cmd = 'p';
+        out.opt(end).cmd = 'k';
         out.opt(end).action = 'toggle:shortcut:stop,menu:shortcuts';
         
         new_opt;
@@ -123,6 +123,12 @@ switch in.menu
         out.opt(end).cmd = 'c';
         out.opt(end).action = 'toggle:shortcut:config,menu:shortcuts';
     
+        new_opt;
+        out.opt(end).value = bool2str('get:shortcut:plugins');
+        out.opt(end).desc = 'MLab plugins';
+        out.opt(end).cmd = 'p';
+        out.opt(end).action = 'toggle:shortcut:plugins,menu:shortcuts';
+        
         new_opt;
         out.opt(end).value = bool2str('get:shortcut:update');
         out.opt(end).desc = 'MLab update';
