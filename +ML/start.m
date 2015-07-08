@@ -109,13 +109,15 @@ rehash
 % -------------------------------------------------------------------------
     function start_plugin(p)
         
+        ppath = [config.path 'Plugins' filesep p filesep];
+        
         % Add plugin path
-        addpath([config.path 'Plugins' filesep p], '-end');
+        addpath(ppath, '-end');
         
         % Start plugin
-        try
-            ML.Plugins.(p).start
-        catch
+        sname = [ppath '+ML' filesep '+Plugins' filesep '+' p filesep 'start.m'];
+        if exist(sname, 'file')
+            eval(['ML.Plugins.' p '.start']);
         end
         
     end
