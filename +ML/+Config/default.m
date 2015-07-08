@@ -51,7 +51,8 @@ config.startup = struct('autostart', true, ...
 
 config.start = struct('update', false);
 
-config.updates = struct('repository', 'https://github.com/MLab-admin/MLab.git');
+config.updates = struct('repository', 'https://github.com/MLab-admin/MLab.git', ...
+    'plugin_base', 'https://github.com/MLab-admin/Plugin-');
 
 config.shortcut = struct();
 config.shortcut.start = struct('value', false, ...

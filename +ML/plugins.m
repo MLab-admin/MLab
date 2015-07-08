@@ -1,12 +1,12 @@
 function plugins(varargin)
-%ML.plugins MLab plugins cli
+%ML.plugins MLab plugins
 %
 %   See also ML.Plugins.list.
 
 % === Input variables =====================================================
 
-in = ML.Input(varargin{:});
-in.addParamValue('message', '', @ischar);
+in = ML.Input;
+in.message('') = @ischar;
 in = +in;
 
 % =========================================================================

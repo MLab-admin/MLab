@@ -1,18 +1,17 @@
-function out = install(ptags, varargin)
-%ML.Plugins.install Install plugins
+function out = install(varargin)
+%ML.Plugins.install Install MLab plugins
 %
 %   See also ML.plugins.
 
-% === Input variables =====================================================
+% --- Input variables
 
-in = ML.Input(ptags, varargin{:});
-in.addRequired('ptags', @(x) ischar(x) || iscellstr(x));
-in.addParamValue('rethrow', false, @islogical);
+in = ML.Input;
+in.ptags = @(x) ischar(x) || iscellstr(x);
 in = +in;
 
 % =========================================================================
 
-% --- Set the plugins tags cell
+% --- Cellification
 if ischar(in.ptags)
     in.ptags = {in.ptags};
 end
@@ -20,32 +19,22 @@ end
 % --- Get configuration structure
 config = ML.config;
 
-% --- Get file list
-url = [config.updates.mirror_url 'MLab.php?list='];
-for i = 1:numel(in.ptags)
-    if i>1, url = [url ',']; end
-    url = [url in.ptags{i}];
-end
-tmp = ML.Internal.fetch(url, 'delimiter', {'\n','\r','\t'});
-L = tmp(2:2:end);
-
-if isempty(L)
-    out = false;
-    return
-end
-
 % --- Get user input
 while true
     
-    if numel(in.ptags)>1, s = 's'; else, s= ''; end
-    fprintf('You are about to install %i plugin%s on this computer.\n\n', numel(in.ptags), s);
-    fprintf('Do you want to proceed installation? [Y/n]\n');
+    clc
+    if numel(in.ptags)>1, s = 's'; else s= ''; end
+    fprintf('You are about to install the following plugin%s:\n\n',s);
+    for i = 1:numel(in.ptags)
+        fprintf('\t- %s\n', in.ptags{i});
+    end
+    fprintf('\nDo you want to start the installation? [Y/n]\n');
     a = input('?> ', 's');
     
     switch lower(a)
         case 'n'
             fprintf('\nInstallation aborted.\n');
-            out = false;
+            if nargout, out = false; end
             return
             
         case {'', 'y'}
@@ -56,43 +45,91 @@ while true
     end
 end
 
-% --- Installation
-h = waitbar(0,'Installation ...');
-for i = 1:numel(L)
-    
-    % Create subdirectory (if it does not exist)
-    D = fileparts([config.path L{i}]);
-    if ~exist(D, 'dir'), mkdir(D); end
-    
-    % Load file from server
-    urlwrite([config.updates.mirror_url 'Code/' L{i}], ...
-        [config.path L{i}], 'Charset', 'UTF-8');
-    
-    % Waitbar
-    waitbar(i/numel(L));
-end
-close(h);
-
-% --- Update path
-addpath(genpath(config.path), '-end');
-
-% --- Plugin startup
+% --- Prepare directories
+pdir = cell(numel(in.ptags),1);
+I = ones(numel(in.ptags),1);
 for i = 1:numel(in.ptags)
-    try ML.(in.ptags{i}).startup; end
+    
+    pdir{i} = [config.path 'Plugins' filesep in.ptags{i} filesep];
+    if exist(pdir{i}, 'dir')
+        
+        while true
+            
+            clc
+            ML.CW.print('~bc[orange]{WARNING} The following plugin already exists:\n\n');
+            ML.CW.print('\t~b{%s}\n\n', pdir{i});
+            ML.CW.print('Are you sure you want to erase it, as well as the configuration file ? [Y/n]\n');
+            
+            switch lower(input('?> ', 's'))
+                case {'y', ''}
+                    
+                    % Remove directory
+                    rmdir(pdir{i}, 's');
+                    
+                    % Remove configuration file
+                    cname = [prefdir 'MLab.' in.ptags{i} '.mat'];
+                    if exist(cname, 'file')
+                        delete(cname);
+                    end
+                    
+                    break;
+                    
+                case 'n'
+                    I(i) = 0;
+                otherwise
+                    clc
+            end
+        end
+        
+    end
 end
+
+in.ptags = in.ptags(I);
+pdir = pdir(I);
+
+% --- Installation
+for i = 1:numel(in.ptags)
+    
+    % Display
+    fprintf('Installing "%s" ...', in.ptags{i}); tic;
+    
+    % Create plugin directory
+    mkdir(pdir{i});
+    
+    % Clone repo
+    cloneCMD = org.eclipse.jgit.api.Git.cloneRepository;
+    cloneCMD.setDirectory(java.io.File(pdir));
+    cloneCMD.setURI([config.updates.plugin_base in.ptags{i} '.git']);
+    cloneCMD.call;
+
+    % Start the plugin
+    % ML.start('plugin', in.ptags);
+
+    % Default configuration
+    try
+        ML.Plugins.(in.ptags{i}).default;
+    catch
+    end
+    
+    % Display
+    fprintf(' %.2f sec\n', toc);
+    
+end
+
+
+% Start the plugin
+% ML.start('plugin', in.ptags);
+
+% % --- Update path
+% % addpath(genpath(config.path), '-end');
+% 
+% % --- Plugin startup
+% for i = 1:numel(in.ptags)
+%     try ML.(in.ptags{i}).startup; end
+% end
 
 % --- Output
-out = true;
-
-sl = ''
-for i = 1:numel(in.ptags)
-    if i>1, sl = [sl ', ']; end
-    sl = [sl in.ptags{i}];
+if nargout
+    out = true;
 end
-
-if in.rethrow
-    ML.plugins('message', ['Installation of ' sl ' successfull.']);
-else
-    fprintf('\nInstallation of %s successfull.\n\n', sl);
-end
-
+fprintf('\nInstallation has been successfull.\n');
