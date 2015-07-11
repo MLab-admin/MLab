@@ -12,7 +12,7 @@ in = +in;
 
 % Preparation
 out = struct('clear', true, 'title', '', 'text', '', ...
-    'opt', struct('text', {}, 'cmd', {}, 'action', {}));
+    'opt', struct('value', {}, 'desc', {}, 'cmd', {}, 'action', {}));
 
 switch in.menu
     
@@ -135,6 +135,20 @@ switch in.menu
         out.opt(end).cmd = 'u';
         out.opt(end).action = 'toggle:shortcut:update,menu:shortcuts';
         
+        % --- Plugin sortcuts
+        PL = ML.Plugins.list;
+        for i = 1:numel(PL)
+           
+            P = ML.Plugins.path(PL{i});
+            if P.shortcuts.exist
+                tmp = P.shortcuts.run();
+                for j = 1:numel(tmp)
+                    out.opt(end+1) = tmp(j);
+                end
+            end
+            
+        end
+        
     case 'user'
         
         out.title = '~b{MLab user configuration}';
@@ -159,7 +173,7 @@ end
     % === Nested functions ================================================
     
     function new_opt
-        out.opt(end+1).text = '';
+        out.opt(end+1).value = '';
     end
 
     function out = bool2str(b)

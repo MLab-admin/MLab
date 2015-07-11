@@ -102,34 +102,23 @@ for i = 1:numel(in.ptags)
     cloneCMD.setURI([config.updates.plugin_base in.ptags{i} '.git']);
     cloneCMD.call;
 
-    % Start the plugin
-    % ML.start('plugin', in.ptags);
-
+    
+    % Get plugin structure
+    P = ML.Plugins.path(in.ptags{i});
+    
     % Default configuration
-    try
-        ML.Plugins.(in.ptags{i}).default;
-    catch
-    end
+    if P.default.exist, P.default.run(); end
     
     % Display
     fprintf(' %.2f sec\n', toc);
     
 end
 
-
-% Start the plugin
-% ML.start('plugin', in.ptags);
-
-% % --- Update path
-% % addpath(genpath(config.path), '-end');
-% 
-% % --- Plugin startup
-% for i = 1:numel(in.ptags)
-%     try ML.(in.ptags{i}).startup; end
-% end
-
 % --- Output
 if nargout
     out = true;
 end
 fprintf('\nInstallation has been successfull.\n');
+
+% Start the plugins
+ML.start('plugin', in.ptags);

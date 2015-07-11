@@ -17,13 +17,21 @@ out = '';
 Act = strsplit(in.action, ',');
 for i = 1:numel(Act)
     
-    A = strsplit(Act{i}, ':');
+    cfile = 'MLab';
+    loc = '';
+    tmp = strsplit(Act{i}, '|');
+    if numel(tmp)>1
+        loc = ['|' tmp{2}];
+        cfile = [cfile '.' tmp{2}];
+    end
+    tmp = tmp{1};
+    A = strsplit(tmp, ':');
     
     switch A{1}
             
         case 'get'
             
-            tmp = load([prefdir filesep 'MLab.mat']);
+            tmp = load([prefdir filesep cfile '.mat']);
             out = tmp.config;
             for i = 2:numel(A)
                 out = out.(A{i});
@@ -31,7 +39,7 @@ for i = 1:numel(Act)
             
         case 'set'
             
-            fname = [prefdir filesep 'MLab.mat'];
+            fname = [prefdir filesep cfile '.mat'];
             tmp = load(fname);
             s = 'tmp.config';
             for i = 2:numel(A)
@@ -60,19 +68,20 @@ for i = 1:numel(Act)
             end
             
         case 'toggle'
-            b = ML.Config.action(['get:' strjoin(A(2:end),':')]);
+            b = ML.Config.action(['get:' strjoin(A(2:end),':') loc]);
             
             if isstruct(b)
-                ML.Config.action(['set:' strjoin(A(2:end),':')], ~b.value);
+                ML.Config.action(['set:' strjoin(A(2:end),':') loc], ~b.value);
             else
-                ML.Config.action(['set:' strjoin(A(2:end),':')], ~b);
+                ML.Config.action(['set:' strjoin(A(2:end),':') loc], ~b);
             end
             
             % Shortcuts
             if strcmp(A{2}, 'shortcut')
             
                 id = A{3};
-                tmp = load([prefdir filesep 'MLab.mat']);
+                config = load([prefdir filesep 'MLab.mat']);
+                tmp = load([prefdir filesep cfile '.mat']);
                 tag = tmp.config.shortcut.(id).desc;
                 code = tmp.config.shortcut.(id).code;
                 icon = tmp.config.shortcut.(id).icon;
@@ -81,7 +90,7 @@ for i = 1:numel(Act)
                 if ~tmp.config.shortcut.(id).value || ismember(tag, arrayfun(@char, S.getShortcutsByCategory('MLab').toArray, 'UniformOutput', false))
                     S.removeShortcut('MLab', tag);
                 else
-                    S.addShortcutToBottom(tag, code, [tmp.config.path icon], 'MLab', 'true');
+                    S.addShortcutToBottom(tag, code, [config.config.path icon], 'MLab', 'true');
                 end
                 
             end
