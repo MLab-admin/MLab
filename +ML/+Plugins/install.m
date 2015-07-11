@@ -102,12 +102,18 @@ for i = 1:numel(in.ptags)
     cloneCMD.setURI([config.updates.plugin_base in.ptags{i} '.git']);
     cloneCMD.call;
 
-    
     % Get plugin structure
     P = ML.Plugins.path(in.ptags{i});
     
     % Default configuration
-    if P.default.exist, P.default.run(); end
+    if P.default.exist
+        
+        % Add to path
+        addpath(P.path, '-end');
+        
+        % Set default configuration file
+        P.default.run();
+    end
     
     % Display
     fprintf(' %.2f sec\n', toc);
