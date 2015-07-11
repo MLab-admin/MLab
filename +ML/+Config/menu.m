@@ -54,6 +54,12 @@ switch in.menu
         out.opt(end).cmd = 'u';
         out.opt(end).action = 'menu:user';
        
+        new_opt;
+        out.opt(end).value = 'Plugins';
+        out.opt(end).desc = '';
+        out.opt(end).cmd = 'p';
+        out.opt(end).action = 'menu:plugins';
+        
     case 'startup'
         
         out.title = '~b{MLab startup configuration}';
@@ -166,8 +172,34 @@ switch in.menu
         out.opt(end).cmd = 'e';
         out.opt(end).action = 'input:user:email,menu:user';
         
+    case 'plugins'
+        
+        out.title = '~b{MLab plugins}';
+        out.text = 'These settings are used to control the MLab plugins.';
+        
+        L = ML.Plugins.list;
+        for i = 1:numel(L)
+            
+            P = ML.Plugins.path(L{i});
+            if ~P.config.exist, continue; end
+            
+            new_opt;
+            out.opt(end).value = L{i};
+            out.opt(end).desc = '';
+            out.opt(end).cmd = num2str(i);
+            out.opt(end).action = ['menu:plugin_' L{i}];
+        end
+        
     otherwise
-        out = NaN;
+        
+        if regexp(in.menu, '^plugin_')
+        
+           P = ML.Plugins.path(in.menu(8:end));
+           out = P.config.run();
+            
+        else
+            out = NaN;
+        end
 end
 
     % === Nested functions ================================================
