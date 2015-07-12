@@ -54,19 +54,6 @@ if isempty(in.plugin)
     % --- Add MLab path
     addpath(config.path, '-end');
     
-    % --- Plugins
-    if isempty(startup)
-        
-        % Plugins list
-        L = ML.Plugins.list;
-        
-        % Plugins
-        for i = 1:numel(L)
-            start_plugin(L{i});
-        end
-        
-    end
-    
     % --- Start message
     if isempty(startup)
         ML.CW.line('MLab is started', 'align', 'right', 'marker', ' ');
@@ -93,9 +80,24 @@ if isempty(in.plugin)
             % ML.Updates.check
         end
         
-        startup = false;
     end
 
+    % --- Plugins
+    if isempty(startup)
+        
+        % Plugins list
+        L = ML.Plugins.list;
+        
+        % Plugins
+        for i = 1:numel(L)
+            start_plugin(L{i});
+        end
+        
+    end
+    
+    % --- Update startup persistent variable
+    if isempty(startup), startup = false; end
+    
 else
     
     for i = 1:numel(in.plugin)
