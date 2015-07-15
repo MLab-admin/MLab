@@ -19,8 +19,10 @@ in = +in;
 % --- Get configutation
 config = ML.config;
 
-G = org.eclipse.jgit.api.Git.open(java.io.File([config.path '.git']));
-G.pull.call;
+Git = org.eclipse.jgit.api.Git.open(java.io.File([config.path '.git']));
+m = Git.pull.call;
+
+m
 
 
 % % % % --- Get file list
