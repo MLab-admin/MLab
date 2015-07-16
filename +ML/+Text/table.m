@@ -72,14 +72,14 @@ if ~isempty(in.cont)
     % Rows (convert, bold-style and store)
     if ~isempty(in.row_headers)
         tmp = cellfun(@fmt, in.row_headers, 'UniformOutput', false);
-        rows = cellfun(@(y) cellfun(@(x) ['<strong>' x '</strong>'], y, 'UniformOutput', false), tmp, 'UniformOutput', false);
+        rows = cellfun(@(y) cellfun(@(x) ['~b{' x '}'], y, 'UniformOutput', false), tmp, 'UniformOutput', false);
         cont = [rows(:) cont];
     end
         
     % Cols (convert, bold-style and store)
     if ~isempty(in.col_headers)
         tmp = cellfun(@fmt, in.col_headers, 'UniformOutput', false);
-        cols = cellfun(@(y) cellfun(@(x) ['<strong>' x '</strong>'], y, 'UniformOutput', false), tmp, 'UniformOutput', false);
+        cols = cellfun(@(y) cellfun(@(x) ['~b{' x '}'], y, 'UniformOutput', false), tmp, 'UniformOutput', false);
         cols = cols(:)';
         if ~isempty(in.row_headers), cols = [{''} cols]; end
         cont = [cols ; cont];
