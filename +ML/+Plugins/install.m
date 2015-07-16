@@ -120,6 +120,11 @@ for i = 1:numel(in.ptags)
     
 end
 
+% --- Reset update list
+if numel(in.ptags)
+    ML.Updates.list('clear', true);
+end
+
 % --- Output
 if nargout
     out = true;

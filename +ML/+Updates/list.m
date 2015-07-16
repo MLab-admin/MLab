@@ -4,22 +4,18 @@ function out = list(varargin)
 %
 %   See also ML.update
 
-% NB: remember to mlock this file when done.
-% NB: remember to do ML.Updates.list('clear', true) after each plugin install.
-
-clc
-
 % --- Inputs
 
 in = ML.Input;
 in.what{''} = @(x) ischar(x) || iscellstr(x);
 in.check(true) = @islogical;
 in.clear(false) = @islogical;
+in.quiet(false) = @islogical;
 in = +in;
 
 % ---- Persistent variables
 
-% mlock ML.Updates.list
+mlock ML.Updates.list
 persistent list;
 
 if ~isstruct(list) || in.clear
@@ -32,7 +28,9 @@ if ~isstruct(list) || in.clear
     
 end
 
-% --- Get configutation
+% --- Preparation
+
+% Configutation
 config = ML.config;
 
 % --- Define 'what' cell
@@ -59,6 +57,10 @@ for i = 1:numel(what)
     
     if isempty(list.(what{i})) || in.check
         
+        if ~in.quiet
+            fprintf('Fetching %s ...', what{i}); tic;
+        end
+        
         list.(what{i}) = {};
         
         switch what{i}
@@ -70,6 +72,7 @@ for i = 1:numel(what)
         
         % --- Git diff
         Git = org.eclipse.jgit.api.Git.open(gname);
+        Git.fetch.call;
         cmd = Git.diff;
         repo = Git.getRepository;
         reader = repo.newObjectReader;
@@ -83,21 +86,15 @@ for i = 1:numel(what)
             list.(what{i}){end+1} = tmp(11:end-1);
         end
         
+        if ~in.quiet
+            fprintf('%.2f sec\n', toc);
+        end
+        
     end
     
 end
 
-list
-
-
-%     || in.check
-%
-%
-%
-%
-% end
-
 % --- Output
-% if nargout
-%     out = what;
-% end
+if nargout
+    out = list;
+end
