@@ -54,7 +54,7 @@ end
 % --- Check list
 
 for i = 1:numel(what)
-    
+        
     if isempty(list.(what{i})) || in.check
         
         if ~in.quiet
