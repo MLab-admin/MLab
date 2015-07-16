@@ -15,7 +15,7 @@ in = +in;
 
 % ---- Persistent variables
 
-mlock ML.Updates.list
+mlock
 persistent list;
 
 if ~isstruct(list) || in.clear
