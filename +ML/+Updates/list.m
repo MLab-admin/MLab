@@ -89,14 +89,6 @@ end
 
 list
 
-
-%     || in.check
-%
-%
-%
-%
-% end
-
 % --- Output
 % if nargout
 %     out = what;
