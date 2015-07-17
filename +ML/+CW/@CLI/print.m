@@ -103,6 +103,8 @@ while true
     
     % --- Display
     clc
+    if ~isempty(this.title), ML.CW.line(this.title); end
+    if ~isempty(this.desc), ML.CW.print(['\n' this.desc '\n\n']); end
     ML.Text.table(T, varargin{:});
     
     % --- Stop here in CW mode

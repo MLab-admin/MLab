@@ -39,6 +39,11 @@ classdef CLI<handle
         elms = {};
     end
     
+    properties (SetAccess = public)
+        title = '';
+        desc = '';
+    end
+    
     % --- Constructor
     methods
         
