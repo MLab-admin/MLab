@@ -1,43 +1,42 @@
 classdef CLI<handle
-% ML.CW.CLI Command Line Interface
-%   This class creates a text-input-based interface in the command window.
-%   The interface has the form of several pages containing lists of 
-%   options. At each step the user is asked to select an option and a
-%   callback method is executed.
+% ML.CW.CLI Command line Interface
+%   This class creates a clickable interface in the command window. The
+%   interface has the form of a 2D grid in which every square can contain
+%   an interactive element (input, selectable field or link).
 %
 %   --- Syntax
 %
-%   ML.CW.CLI creates a CLI object. The default name of the first page is
-%   'Main'.
-%
-%   ML.CW.CLI(PAGE) specifies the name of the first page.
+%   ML.CW.CLI creates a CLI object.
 %
 %   --- Usage
 %
-%   The class ML.CW.CLI cannot be used directly, it has to be derived and
-%   the 'define' method has to be overloaded to define the lists of page 
-%   options. Then, the CLI can be instanciated and started with:
+%   The following methods can be used to place a new element in the grid:
+%       - <a href="matlab: help ML.CW.CLI.text">text</a>:   adds a textual element (not interactive)
+%       - <a href="matlab: help ML.CW.CLI.select">select</a>: adds a selectable element. It supports multiple choices
+%                 and multiple selections.
+%       - <a href="matlab: help ML.CW.CLI.input">input</a>:  adds an input field
+%       - <a href="matlab: help ML.CW.CLI.action">action</a>: adds an action (link)
 %
-%       C = ML.CW.CLI;
-%       C.start;
+%   Once all elements are placed on the grid, use the <a href="matlab: help ML.CW.CLI.print">print</a> method to 
+%   display the interface.
 %
-%   See also ML.CW.CLI
+%   See also ML.CW.CLIm
 %
 %   More on <a href="matlab:ML.doc('ML.CW.CLI');">ML.doc</a>
 
+
     % --- Properties
+    properties (SetAccess = private)
+        
+        name = '';
+        print_param = {};
+        hlmode = ML.isdesktop;
+        clal = {};
+        
+    end
+    
     properties (SetAccess = protected)
-        
-        message = '';
-        header = '\n';
-        page = '';
-        elms = struct('key', {}, 'desc', {}, 'action', {});
-        footer = '\n';
-        
-        case_sensitive = true;
-        quit = false;
-        output;
-        
+        elms = {};
     end
     
     % --- Constructor
@@ -45,30 +44,30 @@ classdef CLI<handle
         
         function this = CLI(varargin)
             
-            % --- Inputs
+            % Inputs
             in = ML.Input;
-            in.page{'Main'} = @ischar;
+            in.name{ML.randstr(10, 'type', 'variable')} = @isvarname;
+            in.mode('default') = @(x) ismember(x, {'CL', 'CW'});
             in = +in;
             
-            % --- Definitions
-            this.page = in.page;
+            % Assignment
+            this.name = in.name;
+                  
+            % Mode
+            switch in.mode
+                case 'CL'
+                    this.hlmode = false;
+                case 'CW'
+                    this.hlmode = true;
+                otherwise
+                    this.hlmode = ML.isdesktop;
+            end
+            
+            % Registration
+            ML.Session.set('MLab_CLI', this.name, this);
+
             
         end
         
     end
 end
-
-
-%! ------------------------------------------------------------------------
-%! Author: Raphaël Candelier
-%! Version: 1.1
-%
-%! Revisions
-%   1.1     (2015/04/07): Created help.
-%   1.0     (2015/04/01): Initial version.
-%
-%! To_do
-%   MLdoc
-%! ------------------------------------------------------------------------
-%! Doc
-%   <title>To do</title>

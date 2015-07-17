@@ -35,6 +35,7 @@ else
         
     % --- Outputs
     txt = sprintf(in.s, unmin{:});
+    txt = regexprep(txt, '\033\[[0-9;]*m', '');
     txt = regexprep(txt, '</?([^>]*)>', '');
     txt = regexprep(txt, '~b?u?(c\[[^\]]*\])?{([^}]*)}', '$2');
     out = numel(txt);

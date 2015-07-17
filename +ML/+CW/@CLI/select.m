@@ -1,29 +1,29 @@
 function select(this, varargin)
-%ML.CW.CWI/select Selectable list
-%   ML.CW.CWI/select(I, J, LIST) adds a selectable list containing the 
+%ML.CW.CLI/select Selectable list
+%   ML.CW.CLI/select(I, J, LIST) adds a selectable list containing the 
 %   options listed in LIST at position (I,J) in the grid. LIST can be a 
 %   number, a string, a numeric array or a cell containing only numbers and 
 %   strings.
 %
-%   ML.CW.CWI/select(..., 'values', V) specifies an array of initial values
+%   ML.CW.CLI/select(..., 'values', V) specifies an array of initial values
 %   V. V can be a numerical or logical array.
 %
-%   ML.CW.CWI/mode(..., 'mode', M) specifies the selection mode. Possible
+%   ML.CW.CLI/mode(..., 'mode', M) specifies the selection mode. Possible
 %   values for M are:
 %       - 'single' (default):  Zero or one option can be selected
 %       - 'multiple', 'multi': Any number of option can be selected
 %
-%   ML.CW.CWI/select(..., 'desc', TXT) adds a textual description TXT on 
+%   ML.CW.CLI/select(..., 'desc', TXT) adds a textual description TXT on 
 %   top of the list during display.
 %
-%   ML.CW.CWI/select(..., 'symbols', S) specifies checking symbols. S is a
+%   ML.CW.CLI/select(..., 'symbols', S) specifies checking symbols. S is a
 %   two element cell, whose first (resp. second) element is displayed for 
 %   the 'false' (resp. 'true') state. The elements of S can have multiple
 %   characters.
 %
-%   See also ML.CW.CWI, ML.CW.CWI/text, ML.CW.CWI/input, ML.CW.CWI/action
+%   See also ML.CW.CLI, ML.CW.CLI/text, ML.CW.CLI/input, ML.CW.CLI/action
 %
-%   More on <a href="matlab:ML.doc('ML.CW.CWI.select');">ML.doc</a>
+%   More on <a href="matlab:ML.doc('ML.CW.CLI.select');">ML.doc</a>
 
 % --- Input
 in = ML.Input;
@@ -72,18 +72,5 @@ this.elms{in.row, in.col} = struct('type', 'select', ...
     'mode', in.mode, ...
     'symbols', {in.symbols});
 
-%! ------------------------------------------------------------------------
-%! Author: Raphaël Candelier
-%! Version: 1.1
-%
-%! Revisions
-%   1.1     (2015/04/07): Improved conversion from numerals to logicals for
-%               'values' and from numeral to strings for 'list', added the
-%               possibility to input a numerical array for 'list'.
-%   1.0     (2015/04/06): Initial version.
-%
-%! To do
-%   MLdoc
-%! ------------------------------------------------------------------------
-%! Doc
-%   <title>To do</title>
+% Registration
+ML.Session.set('MLab_CLI', this.name, this);
