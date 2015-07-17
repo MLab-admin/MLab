@@ -94,16 +94,7 @@ for i = 1:numel(what)
     
 end
 
-<<<<<<< HEAD
 % --- Output
 if nargout
     out = list;
 end
-=======
-list
-
-% --- Output
-% if nargout
-%     out = what;
-% end
->>>>>>> 95bff29f729abcf92448a7cde9fe59bbca7c475a

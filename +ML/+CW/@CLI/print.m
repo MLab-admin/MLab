@@ -20,11 +20,18 @@ else
 end
 
 % --- First call: store informations
-if isempty(this.print_param)
+if this.isfirst
     this.print_param = varargin;
 else
     varargin = this.print_param;
 end
+
+% --- Structure definition
+if ismethod(this, 'structure')
+    this.structure;
+end
+
+this.isfirst = false;
 
 while true
     

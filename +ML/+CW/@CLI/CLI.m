@@ -31,6 +31,7 @@ classdef CLI<handle
         name = '';
         print_param = {};
         hlmode = ML.isdesktop;
+        isfirst = true;
         clal = {};
         
     end
