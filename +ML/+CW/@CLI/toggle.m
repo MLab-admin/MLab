@@ -32,4 +32,8 @@ switch this.elms{in.elm}.mode
 end
 
 % --- Display
-if this.hlmode, this.print; end
+if this.hlmode
+    this.print;
+elseif ismethod(this, 'structure')
+    this.structure;
+end

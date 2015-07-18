@@ -34,7 +34,9 @@ switch in.action
         
         % --- Display
         if this.hlmode && out
-            this.print; 
+            this.print;
+        elseif ismethod(this, 'structure')
+            this.structure;
         end
         
         return
@@ -44,6 +46,7 @@ end
 % Registration
 ML.Session.set('MLab_CLI', this.name, this);
 
+% Output
 if nargout
     out = true;
 end

@@ -11,11 +11,11 @@ function text(this, varargin)
 in = ML.Input;
 in.row = @isnumeric;
 in.col = @isnumeric;
-in.text = @ischar;
+in.text = @(x) ischar(x) || iscellstr(x);
 in = +in;
 
 % --- Store
-this.elms{in.row, in.col} = struct('type', 'text', 'text', in.text);
+this.elms{in.row, in.col} = struct('type', 'text', 'text', {in.text});
 
 % Registration
 ML.Session.set('MLab_CLI', this.name, this);

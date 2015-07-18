@@ -20,4 +20,8 @@ fprintf('Please enter the new input for ''%s'': [Ctrl+C to skip]\n', this.elms{i
 this.elms{in.elm}.value = input('?> ', 's');
 
 % --- Display
-if this.hlmode, this.print; end
+if this.hlmode
+    this.print;
+elseif ismethod(this, 'structure')
+    this.structure;
+end

@@ -134,9 +134,9 @@ while true
             continue; 
         end
     end
-    
+   
     % --- Action
-    eval(['c = ' this.clal{round(z)} ';']);
+    eval(['c = ' this.clal{round(z)}]);
     
     % --- Stop ?
     if ~c, break; end
