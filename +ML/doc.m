@@ -1,6 +1,6 @@
 function T = doc(varargin)
 % ML.doc Reference page in MLab help browser
-%   ML.doc('ok') This is bla bla bla.
+%   ML.doc('ok') This is bla bla bla bla.
 
 % --- Inputs --------------------------------------------------------------
 
