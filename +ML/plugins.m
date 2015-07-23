@@ -16,7 +16,7 @@ Ll = ML.Plugins.list('local')';
 Lr = ML.Plugins.list('remote');
 Ld = setdiff(Lr, Ll);
 
-Ld = cellfun(@(x) ['<a href="matlab:ML.Plugins.install(''' x ''', ''rethrow'', true);">' x '</a>'], Ld, 'UniformOutput', false);
+Ld = cellfun(@(x) ['<a href="matlab:ML.Plugins.install(''' x ''');">' x '</a>'], Ld, 'UniformOutput', false);
 
 % --- Display
 

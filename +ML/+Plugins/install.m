@@ -122,7 +122,7 @@ end
 
 % --- Reset update list
 if numel(in.ptags)
-    ML.Updates.list('clear', true);
+    ML.Updates.list('', 'clear', true, 'quiet', true);
 end
 
 % --- Output
