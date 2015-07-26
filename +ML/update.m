@@ -5,6 +5,11 @@ function update(varargin)
 %
 %   See also
 
+% TO DO: 
+% - Exploit message 'm' in the update method
+% - Re-check after update
+% - Message if everything is up to date (instead of CLI).
+
 % === Input variables =====================================================
 
 in = ML.Input;

@@ -46,8 +46,4 @@ for i = 1:numel(in.what)
     Git = org.eclipse.jgit.api.Git.open(java.io.File([upath '.git']));
     m = Git.pull.call;
     
-    m
-    
 end
-
-pause
