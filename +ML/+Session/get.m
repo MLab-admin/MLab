@@ -4,7 +4,7 @@ function out = get(varargin)
 %   in 'group'. group must and var must be valid Matlab names.
 %
 %   val = ML.Session.get(..., 'quiet', true) does not return warnings if
-%   the varaible is not found.
+%   the variable is not found.
 %
 %   Note: this function is akin to the built-in <a href="matlab:doc getpref">getpref</a>, except that the
 %   variables are not kept from one session to another.
