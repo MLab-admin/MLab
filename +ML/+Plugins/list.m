@@ -35,7 +35,8 @@ switch lower(in.location)
         
         if numel(tmp)>2
             
-            list = cellfun(@(x) x(8:end), {tmp(3:end).name}, 'UniformOutput', false);
+            I = find(cellfun(@(x) numel(regexp(x, '^Plugin-')), {tmp(:).name}));
+            list = cellfun(@(x) x(8:end), {tmp(I).name}, 'UniformOutput', false);
             
         else
             warning('ML:Plugins:list:fetch', 'The remote plugin list could not be obtained.');
