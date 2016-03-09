@@ -1,6 +1,6 @@
 function out = line(varargin)
 %ML.CW.line Line display
-%   ML.CW.line() prints a hotizontal line filling the command window.
+%   ML.CW.line() prints a horizontal line filling the command window.
 %
 %   ML.CW.line(TXT) prints a horizontal line with the string TXT.
 %
@@ -74,3 +74,16 @@ if nargout
 else
     ML.CW.print(txt);
 end
+
+%! ------------------------------------------------------------------------
+%! Author: Raphaël Candelier
+%! Version: 1.2
+%
+%! Revisions
+%   1.2     (2016/03/09): Updated help
+%   1.1     (2015/04/02): Created help
+%   1.0     (2015/01/01): Initial version
+%
+%! ------------------------------------------------------------------------
+%! Doc
+%   <title>To do</title>
