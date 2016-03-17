@@ -12,47 +12,61 @@ function doc(varargin)
 
 in = ML.Input;
 in.loc{''} = @(x) ischar(x) || ML.isfunction_handle(x);
+in.new(false) = @islogical;
 in = +in;
 
 % -------------------------------------------------------------------------
 
 clc
 
-% --- Get target
-target = ML.which(in.loc)
+% --- Get configuration
+conf = ML.config;
 
-% --- Parse file
-[header, footer] = parse_file(target.path);
-H = parse_header(header);
-F = parse_footer(footer);
+% --- Get target
+target = ML.which(in.loc);
+
+% --- Syntaxes
+Synt = get_formated(target);
 
 % --- HTML definition
-
 html = '';
+add('<html>');
+add('<head>');
+add(['<title>' Synt.title '</title>']);
+add(['<link rel="stylesheet" type="text/css" href="' conf.path 'Doc' filesep 'Style' filesep 'style.css">']);
+add('</head>');
+add('<body>');
 
 switch target.type
     
+    case 'package'
+    
     case 'class'
         
-    case 'method'
+        add(['<h1>' Synt.html_title '</h1>']);
         
-    case 'mfile'
+    otherwise
 
+        % --- Parse file
+        [header, footer] = parse_file(target.location.fullpath);
+        H = parse_header(header);
+        F = parse_footer(footer);
+        
         % --- Page title
         tmp = regexp(H.h1, '^([^\s]*)\s(.*)', 'tokens');
-        add(['<h1>' tmp{1}{1} '</h1>']);
-        add(['<div class="subtitle">' tmp{1}{2} '</div>']);
+        add(['<h1>' Synt.html_title '</h1>']);
+        add(['<subtitle>' tmp{1}{2} '</subtitle>']);
         
         % --- Syntax
         add('<h2>Syntax</h2>');
         for i = 1:numel(H.syntax)
-            add(['<div class="syntax">' H.syntax(i).syntax '</div>']);
+            add(['<syntax>' H.syntax(i).syntax '</syntax>']);
         end
         
         % --- Description
         add('<h2>Description</h2>');
         for i = 1:numel(H.syntax)
-            add(['<p><span class="dsyntax">' H.syntax(i).syntax '</span> ' H.syntax(i).description '</p>']);
+            add(['<p><code>' H.syntax(i).syntax '</code> ' H.syntax(i).description '</p>']);
         end
         
         % --- Misc
@@ -67,27 +81,35 @@ switch target.type
         add('<h2>See also</h2>');
         tmp = cell(numel(H.see_also),1);
         for i = 1:numel(H.see_also)
-            w = ML.which(H.see_also{i});
-            tmp{i} = ['<a/ href="' w.path '">' H.see_also{i} '</a>'];
+            if regexp(H.see_also{i}, '^ML\.', 'once')
+                tmp{i} = ['<a href="matlab:ML.doc(''' H.see_also{i} ''');">' H.see_also{i} '</a>'];
+            else
+                tmp{i} = ['<a href="matlab:doc(''' H.see_also{i} ''');">' H.see_also{i} '</a>'];
+            end
         end
         add(['<p>' strjoin(tmp, ', ') '</p>'])
         
-        
 end
-
+add('</body>');
+add('</html>');
 
 % --- Display html
-fprintf('%s\n', html);
-return
+% fprintf('%s\n', html);
 
 % --- Browser display
 tmp = tempname;
 fid = fopen(tmp, 'w');
 fprintf(fid, html);
 fclose(fid);
-web(tmp, '-notoolbar');
-% web(tmp, '-new', '-notoolbar');
+if in.new
+    web(tmp, '-new', '-notoolbar');
+else
+    web(tmp, '-notoolbar');
+end
 
+% -+- Nested functions +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+    % -------------------------------------------
     function add(s)
         html = [html char(10) s];
     end
@@ -289,5 +311,55 @@ while true
         end
     end
 end
+
+end
+
+% -------------------------------------------------------------------------
+function S = get_formated(target)
+%get_formated Get formated strings
+%   S = get_formated(TARGET) returns a structure S containing the following
+%   fields:
+%       - 'title'
+%       - 'html_title'
+%
+%   See also ML.doc
+
+% --- Ooutput
+S = struct();
+
+% --- Titles
+
+% Packages
+tmp = strsplit(target.location.fullpath(2:end), filesep);
+I = cellfun(@(x) x(1)=='+', tmp, 'UniformOutput', false);
+packs = strjoin(cellfun(@(x) x(2:end), tmp([I{:}]), 'UniformOutput', false), '.');
+
+% Class
+k = strfind(target.location.fullpath, '/@');
+if k
+    tmp = target.location.fullpath(k+2:end);
+    if strfind(tmp, '/')
+        class = fileparts(tmp);
+    else
+        class = tmp;
+    end
+else
+    class = '';
+end
+
+switch target.type
+    case 'package'
+        S.title = packs;        
+        S.html_title = ['<span class="packages">' packs '</span>'];
+    case 'class'
+        S.title = [packs '.' class];
+        S.html_title = ['<span class="packages">' packs '</span>.<span class="class">' class '</span>'];
+    otherwise
+        S.title = [packs '.' target.location.name];
+        S.html_title = ['<span class="packages">' packs '</span>.<span class="class">' target.location.name '</span>'];
+end
+
+% packs = ;
+% class = ['];
 
 end

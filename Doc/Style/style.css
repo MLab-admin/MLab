@@ -1,0 +1,27 @@
+.html {
+	
+}
+
+h1 {
+
+}
+
+subtitle {
+	display: block;
+}
+
+h2 {
+
+}
+
+syntax{
+	display: block;
+	font-family: monospace;
+}
+
+code {
+
+}
+
+.packages { color: grey; }
+.class { color: navy;}
