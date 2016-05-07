@@ -39,8 +39,8 @@ function print(varargin)
 %   ML.CW.print('Exemple 1\n', struct('color', 'm', 'bold', true));
 %   ML.CW.print('~b{Bold} is the new chic.\n');
 %   ML.CW.print('This is ~u{really} important.\n');
-%   ML.CW.print('The quick ~c[pink]{brown} fox jumps over the lazy dog.');
-%   ML.CW.print('The quick ~c[139 69 19]{brown} fox jumps over the lazy dog.');
+%   ML.CW.print('The quick ~c[pink]{brown} fox jumps over the lazy dog.\n');
+%   ML.CW.print('The quick ~c[139 69 19]{brown} fox jumps over the lazy dog.\n');
 %
 %   See also fprintf, ML.CW.numel
 %
@@ -106,8 +106,8 @@ else
             if ~isempty(tokens{i}{2}), opt.underline = true; end
             if ~isempty(tokens{i}{3}), opt.color = tokens{i}{3}(3:end-1); end
             
-            tmp = str2num(opt.color);
-            if ~isempty(tmp)
+            tmp = str2double(opt.color);
+            if ~isnan(tmp) && ~isempty(tmp)
                 if any(tmp>1)
                     opt.color = uint8(tmp);
                 else
