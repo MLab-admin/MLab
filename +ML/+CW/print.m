@@ -101,20 +101,21 @@ else
         for i = 1:numel(start)
             fprintf(str(pos:start(i)-1));
             
-            opt = struct('color', '0 0 0', 'bold', false, 'underline', false);
+            opt = struct('color', 'k', 'bold', false, 'underline', false);
             if ~isempty(tokens{i}{1}), opt.bold = true; end
             if ~isempty(tokens{i}{2}), opt.underline = true; end
             if ~isempty(tokens{i}{3}), opt.color = tokens{i}{3}(3:end-1); end
             
-            tmp = str2double(opt.color);
-            if ~isnan(tmp) && ~isempty(tmp)
-                if any(tmp>1)
-                    opt.color = uint8(tmp);
-                else
-                    opt.color = tmp;
+            if isempty(regexp(opt.color, '[a-zA-Z]', 'once'))
+                tmp = str2num(opt.color);
+                if ~isempty(tmp)
+                    if any(tmp>1)
+                        opt.color = uint8(tmp);
+                    else
+                        opt.color = tmp;
+                    end
                 end
             end
-            
             cprintf(tokens{i}{4}, opt);
             pos = stop(i)+1;
         end
