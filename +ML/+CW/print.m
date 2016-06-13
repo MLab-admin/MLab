@@ -21,18 +21,18 @@ function print(varargin)
 %   It is generally a bad pracice to use underlined colored text, since it
 %   ressembles hyperlinks.
 %
-%   Hyperlinks colored with a custom color are possible, but they have to
-%   be underlined and cannot be boldfaced.
+%   Custom-colored hyperlinks are possible, but they have to be underlined 
+%   and cannot be boldfaced.
 %
 %   --- MLTags syntax
 %
 %   MLTags are composed of a '~', one or two letters, a color array (in
-%   square brackets, optional) and a text (in curly braces). Letters
-%   options are:
+%   square brackets, optional) and a text (in curly braces). Letter options
+%   are:
 %   - 'b': for bold text
 %   - 'u': for underlined text
 %   - 'c': for colored text. If 'c' is present a color have to be
-%   specified, in a fomat accepted by ML.color.
+%   specified in square brackets, in a format accepted by ML.color.
 %
 %   --- Exemples
 %

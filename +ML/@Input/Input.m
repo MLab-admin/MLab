@@ -1,4 +1,4 @@
-classdef Input<inputParser
+classdef Input < inputParser
 %ML.Input Input manager
 %   This class simplifies the syntax of the built-in <a href="matlab:doc inputParser;">inputParser</a>, from which
 %   it inherits.
@@ -23,7 +23,8 @@ classdef Input<inputParser
 %       in = +in;
 %
 %   Parameter names ('param_1', ...) can be any string that can be used as 
-%   a structure field (even 'CaseSensitive' or 'PartialMatching)'.
+%   a structure field (even 'CaseSensitive', 'PartialMatching', or 
+%   'StructExpand').
 %
 %   --- Case sensitivity
 %

@@ -5,4 +5,4 @@ function out = isfunction_handle(x)
 %
 %   See also: is*, isa.
 
-out = strcmp(class(x), 'function_handle');
+out = isa(x, 'function_handle');
