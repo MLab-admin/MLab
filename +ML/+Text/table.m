@@ -1,7 +1,7 @@
 function out = table(varargin)
 % ML.Text.table Command-window text table
-%   ML.Text.table(C) displays the content of the cell C in a tabular for in
-%   the command window. The elements of C can be strings, numbers
+%   ML.Text.table(C) displays the content of the cell C in a tabular form
+%   in the command window. The elements of C can be strings, numbers
 %   (including boolean, NaN, Inf and all numeric types) or cells. For
 %   cells, a multi-line element is created, with one row per cell element.
 %   Rich text (<strong>, <a>) are gracefully handled.
@@ -21,6 +21,7 @@ function out = table(varargin)
 %
 %   ML.Text.table(..., 'border', B) specifies the table border style. B is 
 %   a string that can be:
+%       - 'none'
 %       - 'ascii'
 %       - 'single' (default)
 %       - 'rounded'

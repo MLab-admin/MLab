@@ -40,7 +40,7 @@ function print(varargin)
 %   ML.CW.print('~b{Bold} is the new chic.\n');
 %   ML.CW.print('This is ~u{really} important.\n');
 %   ML.CW.print('The quick ~c[pink]{brown} fox jumps over the lazy dog.\n');
-%   ML.CW.print('The quick ~c[139 69 19]{brown} fox jumps over the lazy dog.\n');
+%   ML.CW.print('The quick ~uc[139 69 19]{brown} fox jumps over the lazy dog.\n');
 %
 %   See also fprintf, ML.CW.numel
 %

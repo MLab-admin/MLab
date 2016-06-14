@@ -1,17 +1,39 @@
-.html {
-	
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
+
+html, body {
+	margin:0;
+	padding:0;
+	height:100%;
+  font-family: Arial;
+  font-size: 1em;
+}
+
 
 h1 {
-
+  margin: 0;
+  font-family: Roboto;
+  font-size: 1.5em;
 }
+
+h2 {
+  margin: 0;
+  font-family: Roboto;
+  font-size: 1.2em;
+  color
+}
+
 
 subtitle {
 	display: block;
 }
 
-h2 {
-
+a {
+  text-decoration: none;
+  font-weight: bold;
+  color: DarkSlateGray;
 }
 
 syntax{
@@ -25,3 +47,90 @@ code {
 
 .packages { color: grey; }
 .class { color: navy;}
+
+
+/* --- Structure -------------------------------------------------------- */
+
+#wrapper {
+	min-height: 100%;
+	position: relative;
+}
+
+/* --- Header ----------------------------------------------------------- */
+
+#header {
+  height: 50px;
+  border-bottom: 1px solid grey;
+}
+
+#header_cont {
+  width: 1000px;
+  margin: 0 auto;
+  font-family: Roboto;
+  font-size: 2.5em;
+}
+
+#search {
+  display: inline-block;
+  float: right;
+  margin: -12px 0 0 0;
+}
+
+#searchfield {
+  display: inline-block;
+  width: 300px;
+  height: 30px;
+  padding: 0 5px;
+  font-family: Roboto;
+  font-size: 0.35em;
+}
+
+#searchthis {
+  height: 30px;
+}
+
+/* --- Main ------------------------------------------------------------- */
+
+#content {
+  width: 1000px;
+  min-height: 100%;
+  margin: 15px auto;
+}
+
+#main {
+  width: 800px;
+  margin: 0;
+  padding: 10px 10px 10px 30px;
+  vertical-align: top;
+  font-size: 0.9em;
+}
+
+/* --- Menu ------------------------------------------------------------- */
+
+#menu {
+  width: 230px;
+  padding: 10px 15px;
+  vertical-align: top;
+  background: #EEE;
+}
+
+#menu h1 {
+  font-family: Roboto;
+  font-size: 1em;
+  margin: 0;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+
+#content { padding-bottom:115px; }
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+  width: 100%;
+	height: 100px;
+
+  padding: 10px;
+  border-top: 1px solid grey;
+}
