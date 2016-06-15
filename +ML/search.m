@@ -9,14 +9,14 @@ function OUT = search(varargin)
 %   path, the others are shadowed. The syntax '-all' is also accepted for
 %   compatibility with Matlab's <a href="matlab:doc which">which</a> function.
 %
-%   ML.search(..., 'notfound', NFP) uses a custom "not found procedure". 
+%   ML.search(..., 'notfound', NFP) uses a custom "not found procedure".
 %   NFP is a string which can be:
 %       - 'none': Nothing is done
 %       - 'info': A message is displayed in the command window
 %       - 'warning': (default) A warning is thrown
 %       - 'error': An error is thrown
 %
-%   out = ML.search(...) returns a ML.Search-dreived object, or a cell of 
+%   out = ML.search(...) returns a ML.Search-dreived object, or a cell of
 %   ML.Search-derived objects if the 'all' option is invoked.
 %
 %   See also which, lookfor, exist
@@ -65,43 +65,48 @@ end
 
 % --- Type ----------------------------------------------------------------
 
-% Use which as an input
-if strcmp(in.what, 'all')
-    path = which(in.req, '-all');    
+if strcmp(in.req, 'MLab')
+    out = {ML.Search.MLab()};
+    path = {};
 else
-    path = {which(in.req)};
+    % Use which as an input
+    if strcmp(in.what, 'all')
+        path = which(in.req, '-all');
+    else
+        path = {which(in.req)};
+    end
 end
 
 for i = 1:numel(path)
-
+        
     % Preparation
     info = struct('type', '', 'category', '');
     
     if ~isempty(path{i})      % ::: File or class :::::::::::::::::::::::::
-
+        
         % --- Category
-
+        
         if regexp(path{i}, '^built-in \(.*\)', 'once')
-
+            
             % Built-in
             info.category = 'Built-in';
-
+            
             % Redefine path
             tmp = regexp(path{i}, '^built-in \((.*)\)', 'tokens');
             path{i} = tmp{1}{1};
-
+            
         elseif strfind(path{i}, [tpath 'matlab' filesep])
-
+            
             % Matlab
             info.category = 'Matlab';
-
+            
         elseif strfind(path{i}, tpath)
-
+            
             % Toolbox
             info.category = 'Toolbox';
             x = path{i}(numel(tpath)+1:end);
             info.toolbox = x(1:strfind(x, filesep)-1);
-
+            
         elseif strfind(path{i}, ppath)
             
             info.category = 'Plugin';
@@ -113,22 +118,22 @@ for i = 1:numel(path)
             info.category = 'MLab';
             
         else
-
+            
             % User
             info.category = 'User';
-
+            
         end
-
+        
         % --- Type
-
+        
         if strfind(path{i}, [filesep '@'])
-
+            
             % --- Class
-            info.type = 'class';
+            info.type = 'Class';
             path{i} = fileparts(path{i});
-
+            
         elseif ismember(path{i}(end-1:end), {'.m', '.p'})
-
+            
             % --- Script or function ?
             try
                 nargin(path{i});
@@ -140,20 +145,20 @@ for i = 1:numel(path)
                     rethrow(EX);
                 end
             end
-
+            
         else
             info.type = 'Function';
         end
-
+        
     else                    % ::: Package or method :::::::::::::::::::::::
-
+        
         p = meta.package.fromName(in.req);
-
+        
         if ~isempty(p)      % ::: Package :::
-
+            
             % --- Type
             info.type = 'Package';
-
+            
             % --- Path
             I = strfind(p.Name, '.');
             if isempty(I)
@@ -170,65 +175,75 @@ for i = 1:numel(path)
                     if exist(path{i}, 'dir'), break; end
                 end
             end
-
+            
             % --- Category
             if strfind(path{i}, [tpath 'matlab' filesep])
-
+                
                 % Matlab
                 info.category = 'Matlab';
-
+                
             elseif strfind(path{i}, tpath)
-
+                
                 % Toolbox
                 info.category = 'Toolbox';
                 x = path{i}(numel([matlabroot filesep 'toolbox' filesep])+1:end);
                 info.toolbox = x(1:strfind(x, filesep)-1);
-
+                
             else
-
+                
                 % User
                 info.category = 'User';
-
+                
             end
-
+            
         else                % ::: Method (or junk) :::
-
+            
             % Check for junk
             k = find(in.req=='.', 1, 'last');
             if isempty(k) || isempty(which(in.req(1:k-1)))
                 isnotfound = true;
             else
-
+                
                 % Class & category
                 cls = ML.search(in.req(1:k-1));
-                info.class = cls.location;
-                info.category = cls.category;
-
+                if isprop(cls, 'Package')
+                    info.class = [cls.Package '.' cls.Name];
+                    info.package = cls.Package;
+                else
+                    info.class = cls.Name;
+                end
+                info.category = cls.Category;
+                
                 % Path
-                if exist([cls.location.fullpath filesep in.req(k+1:end) '.m'], 'file')
-                    path{i} = [cls.location.fullpath filesep in.req(k+1:end) '.m'];
-                elseif exist([cls.location.fullpath filesep in.req(k+1:end) '.p'], 'file')
-                    path{i} = [cls.location.fullpath filesep in.req(k+1:end) '.p'];
+                if exist([cls.Fullpath filesep in.req(k+1:end) '.m'], 'file')
+                    path{i} = [cls.Fullpath filesep in.req(k+1:end) '.m'];
+                elseif exist([cls.Fullpath filesep in.req(k+1:end) '.p'], 'file')
+                    path{i} = [cls.Fullpath filesep in.req(k+1:end) '.p'];
                 else
                     isnotfound = true;
                 end
-
+                
                 if ~isnotfound
-                    if strcmp(path{i}(end-1:end), '.m')
-                        info.type = 'method:mfile';
-                    elseif strcmp(path{i}(end-1:end), '.p')
-                        info.type = 'method:pfile';
-                    end
+                    info.type = 'Method';
                 end
             end
         end
-
+        
+    end
+    
+    % --- Plugins ---------------------------------------------------------
+    
+    if isnotfound && exist([ppath in.req], 'dir')
+        info.type = 'Plugin';
+        info.category = 'Plugin';
+        path{i} = [ppath in.req];
+        isnotfound = false;
     end
     
     % --- Nothing found ---------------------------------------------------
-
+    
     if isnotfound
-
+        
         if nargout
             OUT = struct();
         else
@@ -240,47 +255,59 @@ for i = 1:numel(path)
                 case 'error'
                     error('Which::NotFound', ['Could not find anything for ''' in.req '''.']);
             end
+            endout{i} = ML.Search.Method(path{i}, 'info', info);
+            
+            return
         end
-
-        return
     end
-    
+        
     % --- Containing package ----------------------------------------------
     
-    str = fileparts(path{i});
-    I = strfind(str, [filesep '+']);
-    tmp = cell(numel(I), 1);
-    for j = 1:numel(I)
-        if j<numel(I)
-            tmp{j} = str(I(j)+2:I(j+1)-1);
-        else
-            tmp{j} = str(I(j)+2:end);
+    if ~ismember(info.type, {'Method'})
+        str = fileparts(path{i});
+        I = strfind(str, [filesep '+']);
+        tmp = cell(numel(I), 1);
+        for j = 1:numel(I)
+            if j<numel(I)
+                tmp{j} = str(I(j)+2:I(j+1)-1);
+            else
+                tmp{j} = str(I(j)+2:end);
+            end
+        end
+        if ~isempty(tmp)
+            info.package = strjoin(tmp, '.');
         end
     end
-    if ~isempty(tmp)
-        info.package = strjoin(tmp, '.');
-    end
-    
-    
-    % info.package
+        
+    info
     
     % --- ML.Search objects -----------------------------------------------
-        
+    
     switch info.type
         
         case 'Function'
             out{i} = ML.Search.Function(path{i}, 'info', info);
-        
+            
         case 'Script'
             out{i} = ML.Search.Script(path{i}, 'info', info);
             
         case 'Package'
             out{i} = ML.Search.Package(path{i}, 'info', info);
             
+        case 'Class'
+            out{i} = ML.Search.Class(path{i}, 'info', info);
+            
+        case 'Method'
+            out{i} = ML.Search.Method(path{i}, 'info', info);
+            
+        case 'Plugin'
+            out{i} = ML.Search.Plugin(path{i}, 'info', info);
+            
         otherwise
+            warning('ML:search:UnknownType', 'Unknown type');
             info
     end
-
+   
 end
 
 % --- Output & display ----------------------------------------------------
@@ -301,27 +328,37 @@ else
         fprintf('\n');
     end
     out{1}.display;
-
+    
     if strcmp(in.what, 'all')
-
-        if numel(out)==1
-            fprintf('\n--- No other result have been found.\n');
-        else
         
-            fprintf('\n--- Other (shadowed) results:\n');
+        if numel(out)==1
+            fprintf('\n─── No other result have been found.\n');
+        else
+            
+            fprintf('\n─── Other (shadowed) results:\n');
+            T = cell(numel(out)-1,2);
             for i = 2:numel(out)
-                out{2}.Fullpath
+                                
+                tmp = class(out{i});
+                k = strfind(tmp, '.');
+                if numel(k), tmp = tmp(k(end)+1:end); end
+                                    
+                T{i-1,1} = ['<a href="matlab:ML.search(''' out{i}.Syntax ''')">' out{i}.Name '</a> (' out{i}.Category ' ' lower(tmp) ')'];
+                T{i-1,2} = ['~c[100 175 175]{' out{i}.Fullpath '}'];
             end
+            ML.Text.table(T, 'style', 'compact', 'border', 'none');
         end
     end
-        
+    
 end
 
 %! ------------------------------------------------------------------------
 %! Contributors: Raphaël Candelier
-%! Version: 1.4
+%! Version: 1.5
 %
 %! Revisions
+%   1.5     (2016/06/15): Rename to ML.search. Creation of the
+%               ML.Search.Root class and derivaties.
 %   1.4     (2016/05/07): Move most of the content to the ML.Tell objects.
 %   1.3     (2016/04/02): Allow for the 'all' option.
 %   1.2     (2016/03/14): Complete rewriting. Among several other changes,

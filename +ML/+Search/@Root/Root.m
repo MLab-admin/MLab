@@ -1,4 +1,4 @@
-classdef Root < dynamicprops
+classdef (Abstract) Root < dynamicprops
 %       - 'category': a string that can be either 'built-in', 'matlab',
 %           'java', 'user' or 'toolbox'.
 %       - 'type': a string that can be either 'script', 'function',
