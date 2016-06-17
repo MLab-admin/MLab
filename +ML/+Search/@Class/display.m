@@ -57,9 +57,13 @@ ML.Text.table(Prop, 'style', 'compact', 'border', 'none');
 mcls = meta.class.fromName(this.Syntax);
 
 % --- Properties
-
-Paxs = cell(numel(mcls.PropertyList),1); Paxs(:) = {''};
-Prop = cell(numel(mcls.PropertyList),1); Prop(:) = {''};
+mcls
+Paxs = cell(numel(mcls.PropertyList),1);
+Prop = cell(numel(mcls.PropertyList),1);
+if numel(mcls.PropertyList)
+    Paxs(:) = {''};
+    Prop(:) = {''};
+end
 
 for i = 1:numel(mcls.PropertyList)
     

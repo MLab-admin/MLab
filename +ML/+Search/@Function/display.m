@@ -29,7 +29,7 @@ end
 % Package
 if isprop(this, 'Package')
     Prop{end+1,1} = '~c[gray]{Package}';
-    Prop{end,2} = ['<a href="matlab:ML.search(''' this.Package ''', ''verbose'', false);">' this.Package '</a>\n'];
+    Prop{end,2} = ['<a href="matlab:ML.Search.path2obj(''' this.Package ''');">' this.Package '</a>\n'];
 end
 
 ML.Text.table(Prop, 'style', 'compact', 'border', 'none');

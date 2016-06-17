@@ -62,7 +62,7 @@ end
 %
 %! Revisions
 %   2.0     (2015/04/01): Created help and authorized strings in cells.
-%               replaced hist by histcounts.
+%               Replaced hist by histcounts.
 %   1.0     (2008/01/01): Initial version.
 %
 %! ------------------------------------------------------------------------
