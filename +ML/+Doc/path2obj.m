@@ -1,9 +1,9 @@
 function out = path2obj(varargin)
-%ML.Search.path2obj transforms a path into a Search objet
-%   OBJ = ML.Search.path2obj(PATH) returns an object corresponding to the
+%ML.Doc.path2obj transforms a path into a Search objet
+%   OBJ = ML.Doc.path2obj(PATH) returns an object corresponding to the
 %   element located at the string PATH.
 %
-%   See also ML.search, ML.Search.Function etc.
+%   See also ML.search, ML.Doc.Function etc.
 
 % --- Inputs --------------------------------------------------------------
 
@@ -60,7 +60,8 @@ if ~isempty(in.path)
         
     elseif strfind(in.path, conf.path)
         
-        info.category = 'MLab';
+        info.category = 'User';
+        info.type = 'MLab';
         
     else
         
@@ -72,96 +73,99 @@ if ~isempty(in.path)
     % --- Type ------------------------------------------------------------
     
     [P, name, ext] = fileparts(in.path);
-    
-    switch name(1)
-        
-        case '+'
-            info.type = 'Package';
+    if ~isempty(name)
+        switch name(1)
             
-        case '@'
-            info.type = 'Class';
-            
-        otherwise
-            
-            % --- Method, function or script ?
-            if ismember(ext, {'', '.m', '.p'})
+            case '+'
+                info.type = 'Package';
                 
-                [~, tmp] = fileparts(P);
-                if strcmp(tmp(1), '@')
+            case '@'
+                info.type = 'Class';
+                
+            otherwise
+                
+                % --- Method, function or script ?
+                if ismember(ext, {'', '.m', '.p'})
                     
-                    % Method
-                    info.type = 'Method';
-                    
-                    cls = ML.Search.path2obj(P);
-                    info.class = cls.Name;
-                    
-                else
-                    
-                    info.type = 'Function';
-                    
-                    if ismember(ext, {'.m', '.p'})
+                    [~, tmp] = fileparts(P);
+                    if strcmp(tmp(1), '@')
                         
-                        try
-                            nargin(in.path);
+                        % Method
+                        info.type = 'Method';
+                        
+                        cls = ML.Doc.path2obj(P);
+                        info.class = cls.Name;
+                        
+                    else
+                        
+                        info.type = 'Function';
+                        
+                        if ismember(ext, {'.m', '.p'})
                             
-                        catch EX
-                            if strcmp(EX.identifier, 'MATLAB:nargin:isScript')
-                                info.type = 'Script';
-                            else
-                                rethrow(EX);
+                            try
+                                nargin(in.path);
+                                
+                            catch EX
+                                if strcmp(EX.identifier, 'MATLAB:nargin:isScript')
+                                    info.type = 'Script';
+                                else
+                                    rethrow(EX);
+                                end
                             end
                         end
                     end
+                    
                 end
-                
-            end
+        end
     end
     
 end
 
 % --- Containing package ----------------------------------------------
 
-% % % if ~ismember(info.type, {'Method'})
-% % %     str = fileparts(in.path);
-% % %     I = strfind(str, [filesep '+']);
-% % %     tmp = cell(numel(I), 1);
-% % %     for j = 1:numel(I)
-% % %         if j<numel(I)
-% % %             tmp{j} = str(I(j)+2:I(j+1)-1);
-% % %         else
-% % %             tmp{j} = str(I(j)+2:end);
-% % %         end
-% % %     end
-% % %     if ~isempty(tmp)
-% % %         info.package = strjoin(tmp, '.');
-% % %     end
-% % % end
+if ~ismember(info.type, {'Method'})
+    str = fileparts(in.path);
+    I = strfind(str, [filesep '+']);
+    tmp = cell(numel(I), 1);
+    for j = 1:numel(I)
+        if j<numel(I)
+            tmp{j} = str(I(j)+2:I(j+1)-1);
+        else
+            tmp{j} = str(I(j)+2:end);
+        end
+    end
+    if ~isempty(tmp)
+        info.package = strjoin(tmp, '.');
+    end
+end
 
-% --- ML.Search objects -----------------------------------------------
+% --- ML.Doc objects -----------------------------------------------
 
 switch info.type
     
     case 'Function'
-        out = ML.Search.Function(in.path, 'info', info);
+        out = ML.Doc.Function(in.path, 'info', info);
         
     case 'Script'
-        out = ML.Search.Script(in.path, 'info', info);
+        out = ML.Doc.Script(in.path, 'info', info);
         
     case 'Package'
-        out = ML.Search.Package(in.path, 'info', info);
+        out = ML.Doc.Package(in.path, 'info', info);
         
     case 'Class'
-        out = ML.Search.Class(in.path, 'info', info);
+        out = ML.Doc.Class(in.path, 'info', info);
         
     case 'Method'
-        out = ML.Search.Method(in.path, 'info', info);
+        out = ML.Doc.Method(in.path, 'info', info);
+        
+    case 'MLab'
+        out = ML.Doc.MLab();
         
     case 'Plugin'
-        out = ML.Search.Plugin(in.path, 'info', info);
+        out = ML.Doc.Plugin(in.path, 'info', info);
         
     otherwise
         warning('ML:search:UnknownType', 'Unknown type');
-        info
 end
 
 %! ------------------------------------------------------------------------

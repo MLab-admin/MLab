@@ -1,4 +1,4 @@
-classdef Plugin < ML.Search.Root
+classdef Plugin < ML.Doc.Root
     
     properties (Access = public)
         
@@ -14,7 +14,7 @@ classdef Plugin < ML.Search.Root
             
             % --- Parent's constructor ------------------------------------
             
-            this = this@ML.Search.Root(varargin{:});
+            this = this@ML.Doc.Root(varargin{:});
             
             % --- Inputs --------------------------------------------------
                         

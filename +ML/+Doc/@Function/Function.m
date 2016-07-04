@@ -1,21 +1,20 @@
-classdef Method < ML.Search.Root
+classdef Function < ML.Doc.Root
 
     properties (Access = public)
        
         Syntax
         Extension = ''
-        Class
         
     end
     
     methods
         
         % --- Constructor -------------------------------------------------
-        function this = Method(varargin)
+        function this = Function(varargin)
             
             % --- Parent's constructor ------------------------------------
             
-            this = this@ML.Search.Root(varargin{:});
+            this = this@ML.Doc.Root(varargin{:});
             
             % --- Inputs --------------------------------------------------
 
@@ -26,12 +25,15 @@ classdef Method < ML.Search.Root
             % --- Name & extension
             [~, this.Name, this.Extension] = fileparts(this.Fullpath);
             
-            % --- Class
-            this.Class = in.info.class;
-            
             % --- Syntax
-            this.Syntax = [this.Class '.' this.Name];
-            
+            if isprop(this, 'Package')
+                this.Syntax = [this.Package '.' this.Name];
+            elseif ismember(this.Category, {'MLab', 'Plugin'})
+                this.Syntax = ['ML.' this.Name];
+            else
+                this.Syntax = this.Name;
+            end
+                  
         end
         
     end

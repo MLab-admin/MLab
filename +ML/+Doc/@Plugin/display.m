@@ -40,7 +40,7 @@ end
             else
                 [~,tmp] = fileparts(tmp);
             end            
-            name = ['<a href="matlab:ML.search(''' pref tmp ''', ''verbose'', false);">' in(i).Name '</a>'];
+            name = this.slnk([pref tmp], in(i).Name);
             
             out = [out char(10) repmat('    ', [1 level]) name];
             

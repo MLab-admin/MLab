@@ -1,20 +1,21 @@
-classdef Script < ML.Search.Root
+classdef Method < ML.Doc.Root
 
     properties (Access = public)
        
         Syntax
         Extension = ''
+        Class
         
     end
     
     methods
         
         % --- Constructor -------------------------------------------------
-        function this = Script(varargin)
+        function this = Method(varargin)
             
             % --- Parent's constructor ------------------------------------
             
-            this = this@ML.Search.Root(varargin{:});
+            this = this@ML.Doc.Root(varargin{:});
             
             % --- Inputs --------------------------------------------------
 
@@ -25,13 +26,12 @@ classdef Script < ML.Search.Root
             % --- Name & extension
             [~, this.Name, this.Extension] = fileparts(this.Fullpath);
             
+            % --- Class
+            this.Class = in.info.class;
+            
             % --- Syntax
-            if isprop(this, 'Package')
-                this.Syntax = [this.Package '.' this.Name];
-            else
-                this.Syntax = this.Name;
-            end
-                  
+            this.Syntax = [this.Class '.' this.Name];
+            
         end
         
     end

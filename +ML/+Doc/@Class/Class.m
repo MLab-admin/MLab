@@ -1,8 +1,9 @@
-classdef Class < ML.Search.Root
+classdef Class < ML.Doc.Root
 
     properties (Access = public)
        
         Syntax
+        isclassdef = true
         
     end
     
@@ -13,7 +14,7 @@ classdef Class < ML.Search.Root
             
             % --- Parent's constructor ------------------------------------
             
-            this = this@ML.Search.Root(varargin{:});
+            this = this@ML.Doc.Root(varargin{:});
             
             % --- Inputs --------------------------------------------------
 
@@ -28,6 +29,8 @@ classdef Class < ML.Search.Root
             % --- Syntax
             if isprop(this, 'Package')
                 this.Syntax = [this.Package '.' this.Name];
+            elseif ismember(this.Category, {'MLab', 'Plugin'})
+                this.Syntax = ['ML.' this.Name];
             else
                 this.Syntax = this.Name;
             end
@@ -38,6 +41,9 @@ classdef Class < ML.Search.Root
                 addprop(this, 'Parents');
                 this.Parents = tmp;
             end
+            
+            % --- Classdef ?
+            this.isclassdef = ~isempty(meta.class.fromName(this.Syntax));
             
         end
         

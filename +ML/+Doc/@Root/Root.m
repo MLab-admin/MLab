@@ -71,4 +71,10 @@ classdef (Abstract) Root < dynamicprops
         end
         
     end
+    
+    methods (Static)
+        
+      out = slnk(this, varargin) 
+      
+    end
 end

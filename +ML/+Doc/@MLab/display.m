@@ -10,7 +10,7 @@ in = +in;
 
 % --- Header
 ML.CW.print(' ~bc[50 100 150]{MLab}');
-fprintf('   [<a href="matlab:ML.doc(''MLab'');">ML.Doc</a>]\n');
+fprintf('   [<a href="matlab:ML.doc(''%s'');">ML.Doc</a>]\n', this.Fullpath);
 
 ML.CW.print('~c[100 175 175]{%s}\n\n', this.Fullpath);
 
@@ -42,7 +42,7 @@ end
         
         [~, x] = fileparts(in);
         if strcmp(x(1), '+'), x = x(2:end); end
-        out = ['<a href="matlab:ML.search(''' x ''', ''verbose'', false);">' x '</a>'];
+        out = this.slnk(x);
         
     end
 
