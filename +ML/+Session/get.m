@@ -1,7 +1,7 @@
 function out = get(varargin)
 %ML.Session.get Get a session variable
 %   val = ML.Session.get('group', 'var') gets the value of the variable 'var'
-%   in 'group'. group must and var must be valid Matlab names.
+%   in 'group'. group and var must be valid Matlab names.
 %
 %   val = ML.Session.get(..., 'quiet', true) does not return warnings if
 %   the variable is not found.
